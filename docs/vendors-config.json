@@ -1,8 +1,5 @@
 {
   "version": "20260603",
   "vendors": [
-    { "key": "grok", "newChatUrl": "https://grok.com/?probe=remote-merge" },
-    { "key": "poe", "newChatUrl": "https://poe.com/?probe=remote-merge" },
-    { "key": "remoteonly", "index": 90, "label": "Remote Only Vendor", "newChatUrl": "https://example.com/" }
   ]
 }
