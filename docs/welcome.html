@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Use Multiple Chat AI at Once — Installed</title>
+<meta name="description" content="You've installed Use Multiple Chat AI at Once. Pin it to your toolbar in two clicks and chat with multiple AI models at the same time." />
+<link rel="canonical" href="https://yesgenius.github.io/use-multiple-chat-ai-at-once/welcome.html" />
+<meta name="theme-color" content="#4B3BD6" />
+<link rel="icon" type="image/png" href="assets/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #1B1830;
+    --accent: #4B3BD6;
+    --bg: #F6F5FE;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(20px, 3.4vh, 48px) clamp(20px, 4vw, 60px);
+  }
+  body::before, body::after {
+    content: ""; position: fixed; width: 38vmax; height: 38vmax;
+    border-radius: 50%; pointer-events: none; z-index: 0;
+  }
+  body::before { top: -16vmax; left: -14vmax; background: radial-gradient(circle, rgba(110,108,240,0.14), transparent 70%); }
+  body::after  { bottom: -18vmax; right: -14vmax; background: radial-gradient(circle, rgba(75,59,214,0.12), transparent 70%); }
+
+  .page {
+    position: relative; z-index: 1;
+    width: 100%; max-width: 1180px; height: 100%;
+    display: flex; flex-direction: column; align-items: center;
+    gap: clamp(20px, 3.4vh, 40px);
+  }
+
+  header { display: flex; flex-direction: column; align-items: center; gap: clamp(10px, 1.5vh, 15px); text-align: center; flex: 0 0 auto; }
+  .logo {
+    width: clamp(48px, 6vh, 60px); height: clamp(48px, 6vh, 60px);
+    border-radius: clamp(14px, 1.6vh, 17px);
+    box-shadow: 0 12px 30px -8px rgba(75,59,214,0.45); display: block;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 14px 6px 10px; border-radius: 999px; background: #fff;
+    border: 1px solid rgba(75,59,214,0.14); color: var(--accent);
+    font-size: clamp(12px, 1.4vh, 14px); font-weight: 600;
+    box-shadow: 0 2px 8px rgba(46,33,120,0.05);
+  }
+  h1 { margin: 0; font-size: clamp(24px, 3.8vh, 40px); line-height: 1.12; font-weight: 800; letter-spacing: -0.8px; }
+  h1 .nm { color: var(--accent); }
+
+  .steps {
+    width: 100%; flex: 1 1 auto; min-height: 0;
+    display: flex; flex-direction: column; justify-content: center;
+    gap: clamp(18px, 3vh, 30px);
+  }
+  .step { display: flex; flex-direction: column; gap: clamp(8px, 1.4vh, 13px); }
+  .cap { display: flex; align-items: baseline; gap: 10px; padding: 0 2px; }
+  .lbl {
+    flex: 0 0 auto; font-size: clamp(11px, 1.3vh, 13px); font-weight: 700; letter-spacing: 1.2px;
+    text-transform: uppercase; color: var(--accent); white-space: nowrap;
+    background: rgba(75,59,214,0.08); border-radius: 6px; padding: 4px 9px;
+  }
+  .cap p { margin: 0; font-size: clamp(14px, 1.9vh, 17px); line-height: 1.42; color: var(--ink); font-weight: 500; }
+  .cap p b { font-weight: 700; }
+  .frame {
+    border-radius: clamp(11px, 1.5vh, 14px); background: #fff;
+    border: 1px solid rgba(75,59,214,0.12);
+    box-shadow: 0 18px 50px -22px rgba(46,33,120,0.4), 0 4px 14px rgba(46,33,120,0.07);
+    overflow: hidden; display: flex; justify-content: center;
+  }
+  .frame img { display: block; max-width: 100%; width: auto; height: auto; }
+  .step.s1 .frame img { max-height: 46vh; }
+  .step.s2 .frame img { max-height: 17vh; }
+
+  /* On narrow / short screens, allow scrolling so nothing is ever clipped */
+  @media (max-width: 720px), (max-height: 560px) {
+    body { overflow: auto; height: auto; min-height: 100vh; }
+    .page { height: auto; }
+    .steps { justify-content: flex-start; }
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <img class="logo" src="assets/logo.png" alt="Use Multiple Chat AI at Once" />
+      <span class="badge">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="#22B07D"/><path d="M4.7 8.2l2.1 2.1 4.4-4.6" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Successfully installed
+      </span>
+      <h1>Pin <span class="nm">Use Multiple Chat AI at Once</span> to your toolbar</h1>
+    </header>
+
+    <div class="steps">
+      <div class="step s1">
+        <div class="cap">
+          <span class="lbl">Steps 1 &amp; 2</span>
+          <p>Click the <b>puzzle-piece icon</b> (1) at the top-right of your browser, then click the <b>pin</b> (2).</p>
+        </div>
+        <div class="frame">
+          <img src="assets/crop-pin.png" alt="Open the extensions menu and pin Use Multiple Chat AI at Once" />
+        </div>
+      </div>
+
+      <div class="step s2">
+        <div class="cap">
+          <span class="lbl">Step 3</span>
+          <p>Then <b>click the icon</b> (3) on any page to start chatting with every AI at once.</p>
+        </div>
+        <div class="frame">
+          <img src="assets/crop-open.png" alt="Click the pinned icon to start using the extension" />
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
