@@ -95,7 +95,7 @@
 
   /* invisible marker pinned to the bottom of the red circles in screen 2.
      JS lines this up with the bottom of the viewport so only the circles peek. */
-  #peekline{ position:absolute; left:0; right:0; top:20%; height:0; }
+  #peekline{ position:absolute; left:0; right:0; top:23%; height:0; }
 
   /* ---------- footer ---------- */
   .footer{
@@ -180,27 +180,26 @@
       var maxByW = Math.min(vw * 0.94, U_MAX);
       var step2 = document.getElementById('step2');
 
+      // Goal: at ANY window proportion, the red circles of all three steps (1 & 2 on
+      // screen 1, 3 on screen 2) are visible at once, with the content anchored to the
+      // top — no downward shift, no artificial gap.
+
       // 1) Measure the layout's vertical scale constant K (marker pos is ~linear in --u).
-      //    Reset the inter-screen spacer first so we read the natural layout.
-      step2.style.marginTop = '0px';
+      step2.style.marginTop = '0px';            // content always flows from the top
       setU(maxByW);
       var probeTop = marker.getBoundingClientRect().top + window.scrollY;
       var K = probeTop / maxByW;                 // marker doc-position per px of --u
 
-      // 2) Largest --u that keeps the red-circle line within the viewport height.
-      //    Requirement 2 is MANDATORY: never clamp --u upward, so screen 1 always fits
-      //    fully and only the circles of screen 2 peek. Size is secondary.
+      // 2) Largest --u that still keeps circle 3 (the marker) inside the viewport.
+      //    Because u <= uForHeight, the marker is always <= vh, so circle 3 is always
+      //    visible and screen 1 (circles 1 & 2) sits fully above it.
+      //    - Wide window  -> height-bound: screen 1 is capped so circle 3 stays in view
+      //                      (screen 2 shows only its top — the "fuse").
+      //    - Narrow window -> width-bound: screens are smaller, so circle 3 lands higher
+      //                      and screen 2 simply shows more, with no gap or shift.
       var uForHeight = (K > 0) ? (vh / K) : maxByW;
       var u = Math.min(maxByW, uForHeight);
       setU(u);
-
-      // 3) Header + screen 1 stay anchored at the TOP. Any leftover vertical slack
-      //    (only happens when the window is width-constrained / narrow) is absorbed as
-      //    a gap ABOVE screen 2 — which pins the red-circle line to the viewport bottom
-      //    without pushing the whole page down.
-      var mTop = marker.getBoundingClientRect().top + window.scrollY;
-      var slack = vh - mTop;
-      step2.style.marginTop = Math.max(0, slack) + 'px';
     }
 
     function schedule(){ requestAnimationFrame(fit); }
