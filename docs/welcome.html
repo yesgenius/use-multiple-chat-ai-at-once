@@ -29,14 +29,6 @@
     overflow-x:hidden;
     -webkit-font-smoothing:antialiased;
   }
-  /* soft brand glows */
-  body::before, body::after{
-    content:""; position:fixed; width:42vmax; height:42vmax; border-radius:50%;
-    pointer-events:none; z-index:0; filter:blur(2px);
-  }
-  body::before{ top:-16vmax; left:-12vmax; background:radial-gradient(circle, rgba(110,108,240,0.16), transparent 70%); }
-  body::after{ bottom:-18vmax; right:-14vmax; background:radial-gradient(circle, rgba(75,59,214,0.13), transparent 70%); }
-
   .page{
     position:relative; z-index:1;
     width:100%; max-width:1480px; margin:0 auto;
@@ -85,17 +77,16 @@
   .cap p b{ font-weight:700; color:var(--accent); }
 
   .frame{
-    position:relative; width:var(--u); aspect-ratio:1593 / 815;
-    border-radius:calc(var(--u) * 0.02); background:#fff;
-    border:1px solid rgba(75,59,214,0.12);
-    box-shadow:0 24px 60px -26px rgba(46,33,120,0.45), 0 6px 18px rgba(46,33,120,0.08);
-    overflow:hidden;
+    position:relative; width:var(--u); aspect-ratio:1551 / 794;
   }
-  .frame img{ display:block; width:100%; height:100%; object-fit:cover; }
+  .frame img{
+    display:block; width:100%; height:100%;
+    filter:drop-shadow(0 12px 26px rgba(46,33,120,0.16));
+  }
 
   /* invisible marker pinned to the bottom of the red circles in screen 2.
      JS lines this up with the bottom of the viewport so only the circles peek. */
-  #peekline{ position:absolute; left:0; right:0; top:23%; height:0; }
+  #peekline{ position:absolute; left:0; right:0; top:20%; height:0; }
 
   /* ---------- footer ---------- */
   .footer{
@@ -161,7 +152,7 @@
         <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" fill="#4B3BD6"></circle><path d="M7 12.4l3.2 3.2L17 8.8" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
         You're all set
       </span>
-      <p>That's it. Open any page, click the icon, and chat with multiple AI models side by side.</p>
+      <p>Open any page and click the icon to start.</p>
     </div>
   </div>
 
@@ -175,7 +166,7 @@
     function setU(u){ root.style.setProperty('--u', u + 'px'); }
 
     function fit(){
-      var vw = window.__vw || window.innerWidth;
+      var vw = window.innerWidth;
       var vh = window.innerHeight;
       var maxByW = Math.min(vw * 0.94, U_MAX);
       var step2 = document.getElementById('step2');
