@@ -40,7 +40,7 @@
   .page{
     position:relative; z-index:1;
     width:100%; max-width:1480px; margin:0 auto;
-    padding:0 24px;
+    padding:calc(var(--u) * 0.026) 24px 0;
     display:flex; flex-direction:column; align-items:center;
     gap:calc(var(--u) * 0.03);
   }
@@ -175,28 +175,32 @@
     function setU(u){ root.style.setProperty('--u', u + 'px'); }
 
     function fit(){
-      var vw = window.innerWidth;
+      var vw = window.__vw || window.innerWidth;
       var vh = window.innerHeight;
       var maxByW = Math.min(vw * 0.94, U_MAX);
+      var step2 = document.getElementById('step2');
 
-      // 1) Measure the layout's vertical scale constant K.
-      //    The red-circle marker position is ~linear in --u (everything scales with --u).
-      page.style.paddingTop = '0px';
+      // 1) Measure the layout's vertical scale constant K (marker pos is ~linear in --u).
+      //    Reset the inter-screen spacer first so we read the natural layout.
+      step2.style.marginTop = '0px';
       setU(maxByW);
       var probeTop = marker.getBoundingClientRect().top + window.scrollY;
       var K = probeTop / maxByW;                 // marker doc-position per px of --u
 
       // 2) Largest --u that keeps the red-circle line within the viewport height.
-      //    Requirement 2 is MANDATORY: we never clamp --u upward, so screen 1 always
-      //    fits fully and only the circles of screen 2 peek. Size is secondary.
+      //    Requirement 2 is MANDATORY: never clamp --u upward, so screen 1 always fits
+      //    fully and only the circles of screen 2 peek. Size is secondary.
       var uForHeight = (K > 0) ? (vh / K) : maxByW;
       var u = Math.min(maxByW, uForHeight);
       setU(u);
 
-      // 3) Pin the red-circle line exactly to the bottom of the viewport.
+      // 3) Header + screen 1 stay anchored at the TOP. Any leftover vertical slack
+      //    (only happens when the window is width-constrained / narrow) is absorbed as
+      //    a gap ABOVE screen 2 — which pins the red-circle line to the viewport bottom
+      //    without pushing the whole page down.
       var mTop = marker.getBoundingClientRect().top + window.scrollY;
-      var pad = vh - mTop;
-      page.style.paddingTop = Math.max(0, pad) + 'px';
+      var slack = vh - mTop;
+      step2.style.marginTop = Math.max(0, slack) + 'px';
     }
 
     function schedule(){ requestAnimationFrame(fit); }
