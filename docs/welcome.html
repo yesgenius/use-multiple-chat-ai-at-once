@@ -42,53 +42,51 @@
     width:100%; max-width:1480px; margin:0 auto;
     padding:0 24px;
     display:flex; flex-direction:column; align-items:center;
-    gap:calc(var(--u) * 0.05);
+    gap:calc(var(--u) * 0.03);
   }
 
-  /* ---------- header ---------- */
-  header{ display:flex; flex-direction:column; align-items:center; text-align:center; gap:calc(var(--u) * 0.018); }
+  /* ---------- header (single compact row) ---------- */
+  header{ display:flex; align-items:center; justify-content:center; gap:calc(var(--u) * 0.022); text-align:left; }
   .logo{
-    width:calc(var(--u) * 0.084); height:calc(var(--u) * 0.084);
-    border-radius:calc(var(--u) * 0.024);
-    box-shadow:0 14px 34px -10px rgba(75,59,214,0.5); display:block;
+    flex:0 0 auto;
+    width:calc(var(--u) * 0.072); height:calc(var(--u) * 0.072);
+    border-radius:calc(var(--u) * 0.02);
+    box-shadow:0 12px 30px -10px rgba(75,59,214,0.5); display:block;
   }
+  .htext{ display:flex; flex-direction:column; align-items:flex-start; gap:calc(var(--u) * 0.008); }
   .badge{
-    display:inline-flex; align-items:center; gap:calc(var(--u) * 0.013);
-    padding:calc(var(--u) * 0.009) calc(var(--u) * 0.022) calc(var(--u) * 0.009) calc(var(--u) * 0.016);
+    display:inline-flex; align-items:center; gap:calc(var(--u) * 0.011);
+    padding:calc(var(--u) * 0.006) calc(var(--u) * 0.016) calc(var(--u) * 0.006) calc(var(--u) * 0.011);
     border-radius:999px; background:#fff; border:1px solid rgba(75,59,214,0.16);
-    color:var(--accent); font-size:calc(var(--u) * 0.024); font-weight:600;
-    box-shadow:0 2px 10px rgba(46,33,120,0.06); white-space:nowrap;
+    color:var(--accent); font-size:calc(var(--u) * 0.019); font-weight:600;
+    box-shadow:0 2px 8px rgba(46,33,120,0.06); white-space:nowrap;
   }
-  .badge svg{ width:calc(var(--u) * 0.028); height:calc(var(--u) * 0.028); }
+  .badge svg{ width:calc(var(--u) * 0.023); height:calc(var(--u) * 0.023); }
   h1{
-    font-size:calc(var(--u) * 0.054); line-height:1.1; font-weight:800; letter-spacing:-0.02em;
-    max-width:18em;
+    font-size:calc(var(--u) * 0.044); line-height:1.06; font-weight:800; letter-spacing:-0.02em;
+    white-space:nowrap;
   }
   h1 .nm{ color:var(--accent); }
-  .sub{
-    font-size:calc(var(--u) * 0.027); line-height:1.45; color:var(--muted); font-weight:500;
-    max-width:34em;
-  }
 
   /* ---------- steps ---------- */
-  .step{ width:100%; display:flex; flex-direction:column; align-items:center; gap:calc(var(--u) * 0.022); }
+  .step{ width:100%; display:flex; flex-direction:column; align-items:center; gap:calc(var(--u) * 0.013); }
   .cap{
     display:flex; align-items:center; justify-content:center;
-    gap:calc(var(--u) * 0.018); flex-wrap:wrap; text-align:center;
-    max-width:calc(var(--u) * 1.05);
+    gap:calc(var(--u) * 0.013); text-align:center; white-space:nowrap;
+    max-width:calc(var(--u) * 1.08);
   }
   .lbl{
-    flex:0 0 auto; font-size:calc(var(--u) * 0.0205); font-weight:700; letter-spacing:0.08em;
+    flex:0 0 auto; font-size:calc(var(--u) * 0.018); font-weight:700; letter-spacing:0.07em;
     text-transform:uppercase; color:var(--accent); white-space:nowrap;
-    background:rgba(75,59,214,0.09); border-radius:calc(var(--u) * 0.012);
-    padding:calc(var(--u) * 0.0075) calc(var(--u) * 0.016);
+    background:rgba(75,59,214,0.09); border-radius:calc(var(--u) * 0.011);
+    padding:calc(var(--u) * 0.006) calc(var(--u) * 0.013);
   }
-  .cap p{ font-size:calc(var(--u) * 0.029); line-height:1.4; color:var(--ink); font-weight:500; }
+  .cap p{ font-size:calc(var(--u) * 0.0235); line-height:1.35; color:var(--ink); font-weight:500; }
   .cap p b{ font-weight:700; color:var(--accent); }
 
   .frame{
-    position:relative; width:var(--u); aspect-ratio:1593 / 1144;
-    border-radius:calc(var(--u) * 0.022); background:#fff;
+    position:relative; width:var(--u); aspect-ratio:1593 / 815;
+    border-radius:calc(var(--u) * 0.02); background:#fff;
     border:1px solid rgba(75,59,214,0.12);
     box-shadow:0 24px 60px -26px rgba(46,33,120,0.45), 0 6px 18px rgba(46,33,120,0.08);
     overflow:hidden;
@@ -96,51 +94,43 @@
   .frame img{ display:block; width:100%; height:100%; object-fit:cover; }
 
   /* invisible marker pinned to the bottom of the red circles in screen 2.
-     JS lines this up with the bottom of the viewport. */
-  #peekline{ position:absolute; left:0; right:0; top:17%; height:0; }
+     JS lines this up with the bottom of the viewport so only the circles peek. */
+  #peekline{ position:absolute; left:0; right:0; top:20%; height:0; }
 
   /* ---------- footer ---------- */
   .footer{
     width:100%; max-width:calc(var(--u) * 1.05);
     display:flex; flex-direction:column; align-items:center; text-align:center;
-    gap:calc(var(--u) * 0.016);
-    padding:calc(var(--u) * 0.03) 0 calc(var(--u) * 0.07);
+    gap:calc(var(--u) * 0.014);
+    padding:calc(var(--u) * 0.026) 0 calc(var(--u) * 0.06);
   }
   .footer .done{
-    display:inline-flex; align-items:center; gap:calc(var(--u) * 0.013);
-    font-size:calc(var(--u) * 0.03); font-weight:700; color:var(--accent); white-space:nowrap;
+    display:inline-flex; align-items:center; gap:calc(var(--u) * 0.012);
+    font-size:calc(var(--u) * 0.028); font-weight:700; color:var(--accent); white-space:nowrap;
   }
-  .footer .done svg{ width:calc(var(--u) * 0.034); height:calc(var(--u) * 0.034); }
-  .footer p{ font-size:calc(var(--u) * 0.025); line-height:1.5; color:var(--muted); font-weight:500; max-width:30em; }
+  .footer .done svg{ width:calc(var(--u) * 0.032); height:calc(var(--u) * 0.032); }
+  .footer p{ font-size:calc(var(--u) * 0.023); line-height:1.5; color:var(--muted); font-weight:500; max-width:32em; }
 
-  /* ---------- scroll hint ---------- */
-  #scrollHint{
-    position:fixed; left:50%; bottom:18px; transform:translateX(-50%);
-    z-index:20; display:inline-flex; align-items:center; gap:8px;
-    padding:8px 16px; border-radius:999px;
-    background:rgba(37,31,73,0.82); color:#fff; backdrop-filter:blur(6px);
-    font-size:13px; font-weight:600; letter-spacing:0.01em; white-space:nowrap;
-    box-shadow:0 8px 24px rgba(37,31,73,0.3);
-    transition:opacity .35s ease, transform .35s ease;
-    cursor:pointer; pointer-events:none;
+  /* On genuinely narrow screens, let captions/title wrap so nothing overflows. */
+  @media (max-width: 560px){
+    header{ flex-direction:column; text-align:center; }
+    .htext{ align-items:center; }
+    h1{ white-space:normal; text-align:center; }
+    .cap{ white-space:normal; flex-wrap:wrap; }
   }
-  #scrollHint svg{ width:15px; height:15px; }
-  #scrollHint .chev{ animation:bob 1.4s ease-in-out infinite; }
-  body.scrolled #scrollHint{ opacity:0; transform:translate(-50%, 12px); }
-  @keyframes bob{ 0%,100%{ transform:translateY(-1px); } 50%{ transform:translateY(3px); } }
-  @media (prefers-reduced-motion: reduce){ #scrollHint .chev{ animation:none; } }
 </style>
 </head>
 <body>
   <div class="page">
     <header>
       <img class="logo" src="assets/logo.png" alt="Use Multiple Chat AI at Once">
-      <span class="badge">
-        <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="#22B07D"></circle><path d="M4.7 8.2l2.1 2.1 4.4-4.6" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-        Successfully installed
-      </span>
-      <h1>Pin <span class="nm">Use Multiple Chat AI at Once</span> to your toolbar</h1>
-      <p class="sub">One pin keeps it a single click away — so you never have to hunt for it again.</p>
+      <div class="htext">
+        <span class="badge">
+          <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="#22B07D"></circle><path d="M4.7 8.2l2.1 2.1 4.4-4.6" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          Successfully installed
+        </span>
+        <h1>Pin <span class="nm">Use Multiple Chat AI at Once</span></h1>
+      </div>
     </header>
 
     <!-- SCREEN 1 — fully visible in the browser window -->
@@ -158,7 +148,7 @@
     <div class="step" id="step2">
       <div class="cap">
         <span class="lbl">Step 3</span>
-        <p>Now <b>click the icon</b> (3) on any page to start chatting with every AI at once.</p>
+        <p>Now <b>click the icon</b> (3) to chat with every AI at once.</p>
       </div>
       <div class="frame">
         <div id="peekline"></div>
@@ -175,37 +165,32 @@
     </div>
   </div>
 
-  <div id="scrollHint">
-    <span>Scroll for step 3</span>
-    <svg class="chev" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-  </div>
-
   <script>
     var page = document.querySelector('.page');
     var marker = document.getElementById('peekline');
     var root = document.documentElement;
 
-    // Minimum/maximum displayed width of one screenshot (px).
-    var U_MAX = 1340;
-    var U_FLOOR = 320;
+    var U_MAX = 1340;   // never enlarge a screenshot past this width
 
     function setU(u){ root.style.setProperty('--u', u + 'px'); }
 
     function fit(){
       var vw = window.innerWidth;
       var vh = window.innerHeight;
-      var maxByW = Math.min(vw * 0.92, U_MAX);
+      var maxByW = Math.min(vw * 0.94, U_MAX);
 
-      // 1) Measure the layout's vertical scale constant K (marker position is ~linear in --u).
+      // 1) Measure the layout's vertical scale constant K.
+      //    The red-circle marker position is ~linear in --u (everything scales with --u).
       page.style.paddingTop = '0px';
       setU(maxByW);
       var probeTop = marker.getBoundingClientRect().top + window.scrollY;
-      var K = probeTop / maxByW;            // marker doc-position per px of --u
+      var K = probeTop / maxByW;                 // marker doc-position per px of --u
 
-      // 2) Pick the largest --u that still lets the red-circle line sit at the fold.
+      // 2) Largest --u that keeps the red-circle line within the viewport height.
+      //    Requirement 2 is MANDATORY: we never clamp --u upward, so screen 1 always
+      //    fits fully and only the circles of screen 2 peek. Size is secondary.
       var uForHeight = (K > 0) ? (vh / K) : maxByW;
       var u = Math.min(maxByW, uForHeight);
-      u = Math.max(u, Math.min(U_FLOOR, maxByW));   // never below floor (or viewport width)
       setU(u);
 
       // 3) Pin the red-circle line exactly to the bottom of the viewport.
@@ -214,23 +199,15 @@
       page.style.paddingTop = Math.max(0, pad) + 'px';
     }
 
-    // Re-fit once fonts/images settle, on resize, and on orientation change.
     function schedule(){ requestAnimationFrame(fit); }
     window.addEventListener('resize', schedule);
     window.addEventListener('orientationchange', schedule);
     window.addEventListener('load', schedule);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(schedule);
-    // images
     document.querySelectorAll('.frame img').forEach(function(img){
       if (!img.complete) img.addEventListener('load', schedule, { once:true });
     });
     fit();
-
-    // Scroll hint fades after the user starts scrolling.
-    var hint = document.getElementById('scrollHint');
-    function onScroll(){ document.body.classList.toggle('scrolled', window.scrollY > 40); }
-    window.addEventListener('scroll', onScroll, { passive:true });
-    onScroll();
   </script>
 </body>
 </html>
