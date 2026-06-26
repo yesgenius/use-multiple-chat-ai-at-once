@@ -203,5 +203,60 @@
     });
     fit();
   </script>
+
+  <!-- Localized name + Yandex.Metrika (external page only; no extension code here).
+       Reads the URL fragment the extension wrote at install, then inits Metrika so
+       both visit params land in the first pageview. Falls back to the static English
+       name when opened without a fragment. -->
+  <script type="text/javascript">
+    // ── Named constants (no magic values) ──────────────────────────────────────
+    var YM_COUNTER_ID = 110166603;
+    var YM_TAG_SRC = 'https://mc.yandex.ru/metrika/tag.js?id=' + YM_COUNTER_ID;
+
+    // Visit-parameter keys exposed in Metrika reports.
+    var EXTENSION_NAME_PARAM_KEY = 'extension_name';
+    var EXTENSION_LOCALE_PARAM_KEY = 'extension_locale';
+
+    // Fragment parameter names — CONTRACT with the extension (shared/constants.js
+    // WELCOME_FRAGMENT_PARAM). Must match byte-for-byte. The name value is the
+    // manifest `name` (what the Chrome Web Store displays).
+    var FRAGMENT_PARAM_NAME = 'name';
+    var FRAGMENT_PARAM_LOCALE = 'locale';
+
+    var HEADING_NAME_SELECTOR = '.nm';
+
+    // ── 1) Read the fragment the extension wrote at install ─────────────────────
+    var fragment = new URLSearchParams(location.hash.slice(1));
+    var name = fragment.get(FRAGMENT_PARAM_NAME);
+    var locale = fragment.get(FRAGMENT_PARAM_LOCALE);
+
+    // ── 2) Show the localized name (textContent only). Missing → English fallback.
+    if (name) {
+      document.querySelector(HEADING_NAME_SELECTOR).textContent = name;
+    }
+
+    // ── 3) Build visit params from those two values only — nothing else. ─────────
+    var visitParams = {};
+    if (name) visitParams[EXTENSION_NAME_PARAM_KEY] = name;
+    if (locale) visitParams[EXTENSION_LOCALE_PARAM_KEY] = locale;
+
+    // ── 4) Strip the fragment before init so the name is reported only as a visit
+    //       param, never inside the page URL (keeps it out of webvisor/hit URLs).
+    if (location.hash) {
+      history.replaceState(null, '', location.pathname + location.search);
+    }
+
+    // ── 5) Init Metrika after the fragment is read → both params in first pageview.
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document, 'script', YM_TAG_SRC, 'ym');
+
+    ym(YM_COUNTER_ID, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true, params: visitParams});
+  </script>
+  <!-- noscript fallback pixel mirrors YM_COUNTER_ID (110166603) -->
+  <noscript><div><img src="https://mc.yandex.ru/watch/110166603" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 </body>
 </html>
