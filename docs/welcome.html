@@ -104,11 +104,12 @@
   .footer .done svg{ width:calc(var(--u) * 0.032); height:calc(var(--u) * 0.032); }
   .footer p{ font-size:calc(var(--u) * 0.023); line-height:1.5; color:var(--muted); font-weight:500; max-width:32em; }
 
-  /* On genuinely narrow screens, let captions/title wrap so nothing overflows. */
+  /* On genuinely narrow screens, stack the header and let captions wrap. The
+     title stays one line at every width — its size is auto-fit in JS, so it must
+     not wrap here (wrapping would invalidate the one-line width measurement). */
   @media (max-width: 560px){
     header{ flex-direction:column; text-align:center; }
     .htext{ align-items:center; }
-    h1{ white-space:normal; text-align:center; }
     .cap{ white-space:normal; flex-wrap:wrap; }
   }
 </style>
@@ -166,28 +167,26 @@
 
     var U_MAX = 1340;   // never enlarge a screenshot past this width
 
-    // Title auto-fit — keep the (possibly long, localized) name on one line by
-    // shrinking only the h1 until it fits the width left of the page padding,
-    // minus the logo and the header gap. Ratios mirror the CSS so the two cannot
-    // drift: .logo width = 0.072u, header gap = 0.022u, .page = max 1480 / 24px
-    // padding, responsive breakpoint = 560.
+    // Title auto-fit — keep the (possibly long, localized) name on ONE line at
+    // every width by shrinking only the h1 until it fits. One continuous formula,
+    // no breakpoint switch, so the size changes monotonically with width (never
+    // jumps bigger as the window narrows). Available width = page content minus
+    // the logo and header gap; ratios mirror the CSS so the two cannot drift:
+    // .logo width = 0.072u, header gap = 0.022u, .page = max 1480 / 24px padding.
+    // (Below 560px the header stacks so the logo is above, not beside, the title;
+    //  we keep subtracting it anyway — slightly conservative, but kink-free.)
     var LOGO_RATIO = 0.072;
     var HEADER_GAP_RATIO = 0.022;
     var PAGE_MAX_W = 1480;
     var PAGE_PADDING_X = 24;
-    var MOBILE_BREAKPOINT = 560;
-    var TITLE_MIN_SCALE = 0.4;   // floor: very long names stay readable, not microscopic
+    var TITLE_MIN_SCALE = 0.3;   // floor guard against degenerate measurements
 
     function setU(u){ root.style.setProperty('--u', u + 'px'); }
     function setTitleScale(s){ root.style.setProperty('--title-scale', String(s)); }
 
     function fitTitle(u){
-      var vw = window.innerWidth;
-      // Below the breakpoint the header stacks and the title is allowed to wrap
-      // (CSS media query) — leave it at full size and let it flow.
-      if (vw <= MOBILE_BREAKPOINT) { setTitleScale(1); return; }
-
       setTitleScale(1);   // measure the natural one-line width at full size
+      var vw = window.innerWidth;
       var contentW = Math.min(vw, PAGE_MAX_W) - PAGE_PADDING_X * 2;
       var avail = contentW - u * (LOGO_RATIO + HEADER_GAP_RATIO);
       var natural = title.scrollWidth;
