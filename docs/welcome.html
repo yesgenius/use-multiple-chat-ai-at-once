@@ -226,18 +226,21 @@
     var HEADING_NAME_SELECTOR = '.nm';
 
     // ── 1) Read the fragment the extension wrote at install ─────────────────────
+    // NB: do NOT name this var `name` — at global script scope `var name` aliases
+    // `window.name`, which coerces to a string ("null" when the param is absent)
+    // and would overwrite the fallback heading.
     var fragment = new URLSearchParams(location.hash.slice(1));
-    var name = fragment.get(FRAGMENT_PARAM_NAME);
+    var displayName = fragment.get(FRAGMENT_PARAM_NAME);
     var locale = fragment.get(FRAGMENT_PARAM_LOCALE);
 
     // ── 2) Show the localized name (textContent only). Missing → English fallback.
-    if (name) {
-      document.querySelector(HEADING_NAME_SELECTOR).textContent = name;
+    if (displayName) {
+      document.querySelector(HEADING_NAME_SELECTOR).textContent = displayName;
     }
 
     // ── 3) Build visit params from those two values only — nothing else. ─────────
     var visitParams = {};
-    if (name) visitParams[EXTENSION_NAME_PARAM_KEY] = name;
+    if (displayName) visitParams[EXTENSION_NAME_PARAM_KEY] = displayName;
     if (locale) visitParams[EXTENSION_LOCALE_PARAM_KEY] = locale;
 
     // ── 4) Strip the fragment before init so the name is reported only as a visit
