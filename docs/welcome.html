@@ -19,6 +19,8 @@
     --bg:#faf9f5;
     /* --u is the live scale unit (= displayed width of one browser screenshot). Set by JS. */
     --u:620px;
+    /* --title-scale shrinks ONLY the h1 so a long localized name fits one line. Set by JS. */
+    --title-scale:1;
   }
   *{ margin:0; padding:0; box-sizing:border-box; }
   html,body{ background:var(--bg); }
@@ -55,7 +57,7 @@
   }
   .badge svg{ width:calc(var(--u) * 0.023); height:calc(var(--u) * 0.023); }
   h1{
-    font-size:calc(var(--u) * 0.044); line-height:1.06; font-weight:800; letter-spacing:-0.02em;
+    font-size:calc(var(--u) * 0.044 * var(--title-scale)); line-height:1.06; font-weight:800; letter-spacing:-0.02em;
     white-space:nowrap;
   }
   h1 .nm{ color:var(--accent); }
@@ -159,11 +161,41 @@
   <script>
     var page = document.querySelector('.page');
     var marker = document.getElementById('peekline');
+    var title = document.querySelector('h1');
     var root = document.documentElement;
 
     var U_MAX = 1340;   // never enlarge a screenshot past this width
 
+    // Title auto-fit — keep the (possibly long, localized) name on one line by
+    // shrinking only the h1 until it fits the width left of the page padding,
+    // minus the logo and the header gap. Ratios mirror the CSS so the two cannot
+    // drift: .logo width = 0.072u, header gap = 0.022u, .page = max 1480 / 24px
+    // padding, responsive breakpoint = 560.
+    var LOGO_RATIO = 0.072;
+    var HEADER_GAP_RATIO = 0.022;
+    var PAGE_MAX_W = 1480;
+    var PAGE_PADDING_X = 24;
+    var MOBILE_BREAKPOINT = 560;
+    var TITLE_MIN_SCALE = 0.4;   // floor: very long names stay readable, not microscopic
+
     function setU(u){ root.style.setProperty('--u', u + 'px'); }
+    function setTitleScale(s){ root.style.setProperty('--title-scale', String(s)); }
+
+    function fitTitle(u){
+      var vw = window.innerWidth;
+      // Below the breakpoint the header stacks and the title is allowed to wrap
+      // (CSS media query) — leave it at full size and let it flow.
+      if (vw <= MOBILE_BREAKPOINT) { setTitleScale(1); return; }
+
+      setTitleScale(1);   // measure the natural one-line width at full size
+      var contentW = Math.min(vw, PAGE_MAX_W) - PAGE_PADDING_X * 2;
+      var avail = contentW - u * (LOGO_RATIO + HEADER_GAP_RATIO);
+      var natural = title.scrollWidth;
+      var scale = (natural > avail && natural > 0)
+        ? Math.max(avail / natural, TITLE_MIN_SCALE)
+        : 1;
+      setTitleScale(scale);
+    }
 
     function fit(){
       var vw = window.innerWidth;
@@ -177,6 +209,7 @@
 
       // 1) Measure the layout's vertical scale constant K (marker pos is ~linear in --u).
       step2.style.marginTop = '0px';            // content always flows from the top
+      setTitleScale(1);                         // probe with the tallest header (full title)
       setU(maxByW);
       var probeTop = marker.getBoundingClientRect().top + window.scrollY;
       var K = probeTop / maxByW;                 // marker doc-position per px of --u
@@ -191,6 +224,10 @@
       var uForHeight = (K > 0) ? (vh / K) : maxByW;
       var u = Math.min(maxByW, uForHeight);
       setU(u);
+
+      // 3) Shrink the title (if needed) to fit one line. Only ever reduces the
+      //    header height, so circle 3 stays in view — no re-measure required.
+      fitTitle(u);
     }
 
     function schedule(){ requestAnimationFrame(fit); }
@@ -234,8 +271,11 @@
     var locale = fragment.get(FRAGMENT_PARAM_LOCALE);
 
     // ── 2) Show the localized name (textContent only). Missing → English fallback.
+    //       Re-run the layout so the title auto-fit accounts for the new (longer)
+    //       text immediately, not only after load/fonts.ready.
     if (displayName) {
       document.querySelector(HEADING_NAME_SELECTOR).textContent = displayName;
+      if (typeof schedule === 'function') schedule();
     }
 
     // ── 3) Build visit params from those two values only — nothing else. ─────────
