@@ -14,7 +14,6 @@
 <style>
   :root{
     --accent:#4B3BD6;
-    --accent2:#6E6CF0;
     --ink:#251f49;
     --muted:#6c6790;
     --bg:#faf9f5;
@@ -44,11 +43,6 @@
     font-size:clamp(28px, 5vw, 40px); line-height:1.1; font-weight:800; letter-spacing:-0.02em;
     color:var(--ink);
   }
-  header p{
-    font-size:clamp(15px, 2.4vw, 18px); line-height:1.5; color:var(--muted);
-    font-weight:500; max-width:34em;
-  }
-  header p .nm{ color:var(--accent); font-weight:700; }
 
   /* ---------- form card ---------- */
   .card{
@@ -84,7 +78,6 @@
     <header>
       <img class="logo" src="assets/logo.png" alt="Use Multiple Chat AI at Once">
       <h1>We're sorry to see you go.</h1>
-      <p>Before you go, could you tell us why you uninstalled <span class="nm">Use Multiple Chat AI at Once</span>? Your feedback takes a minute and helps us make it better.</p>
     </header>
 
     <!-- Google Form embedded via iframe. `?embedded=true` renders the compact
@@ -100,14 +93,13 @@
 
     <div class="footer">
       <p id="reinstall" hidden>Changed your mind? <a id="reinstall-link" href="#">Reinstall from the Chrome Web Store</a>.</p>
-      <p>Thank you for trying it — your feedback means a lot.</p>
     </div>
   </div>
 
-  <!-- Localized name + Yandex.Metrika (external page only; no extension code here).
-       Reads the URL fragment the extension wrote at uninstall, then inits Metrika
-       so both visit params land in the first pageview. Falls back to the static
-       English name when opened without a fragment. Mirrors welcome.html. -->
+  <!-- Reinstall link + Yandex.Metrika (external page only; no extension code here).
+       Reads the URL fragment the extension wrote at uninstall, builds the store
+       reinstall link from the id, then inits Metrika so name/locale land as visit
+       params in the first pageview. Mirrors welcome.html. -->
   <script type="text/javascript">
     // ── Named constants (no magic values) ──────────────────────────────────────
     var YM_COUNTER_ID = 110166603;
@@ -125,8 +117,6 @@
     var FRAGMENT_PARAM_LOCALE = 'locale';
     var FRAGMENT_PARAM_ID = 'id';
 
-    var HEADING_NAME_SELECTOR = '.nm';
-
     // Chrome Web Store detail base — mirrors WEBSTORE_DETAIL_URL_BASE in
     // shared/constants.js (buildWebstoreDetailUrl). The extension id is appended
     // as a path segment to build the "reinstall" link; works before publication.
@@ -143,12 +133,7 @@
     var locale = fragment.get(FRAGMENT_PARAM_LOCALE);
     var extensionId = fragment.get(FRAGMENT_PARAM_ID);
 
-    // ── 2) Show the localized name (textContent only). Missing → English fallback.
-    if (displayName) {
-      document.querySelector(HEADING_NAME_SELECTOR).textContent = displayName;
-    }
-
-    // ── 2b) Build the "reinstall" link from the id and reveal it. Missing id →
+    // ── 2) Build the "reinstall" link from the id and reveal it. Missing id →
     //        stays hidden (no broken link on a static, pre-publication page).
     if (extensionId) {
       document.getElementById(REINSTALL_LINK_ID).href =
