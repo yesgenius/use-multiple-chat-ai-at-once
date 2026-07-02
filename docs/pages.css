@@ -23,7 +23,7 @@
 *{ margin:0; padding:0; box-sizing:border-box; }
 html,body{ background:var(--bg); }
 body{
-  font-family:'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
   color:var(--ink);
   min-height:100vh;
   -webkit-font-smoothing:antialiased;
