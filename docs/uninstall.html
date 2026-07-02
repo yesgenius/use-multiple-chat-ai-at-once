@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>We're sorry to see you go.</title>
+<meta name="description" content="You've uninstalled Use Multiple Chat AI at Once. Tell us why — your feedback helps us improve.">
+<meta name="theme-color" content="#4B3BD6">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --accent:#4B3BD6;
+    --accent2:#6E6CF0;
+    --ink:#251f49;
+    --muted:#6c6790;
+    --bg:#faf9f5;
+    --card:#ffffff;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html,body{ background:var(--bg); }
+  body{
+    font-family:'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .page{
+    width:100%; max-width:760px; margin:0 auto;
+    padding:56px 24px 72px;
+    display:flex; flex-direction:column; align-items:center; gap:28px;
+  }
+
+  /* ---------- header ---------- */
+  header{ display:flex; flex-direction:column; align-items:center; gap:16px; text-align:center; }
+  .logo{
+    width:64px; height:64px; border-radius:16px;
+    box-shadow:0 12px 30px -10px rgba(75,59,214,0.5); display:block;
+  }
+  h1{
+    font-size:clamp(28px, 5vw, 40px); line-height:1.1; font-weight:800; letter-spacing:-0.02em;
+    color:var(--ink);
+  }
+  header p{
+    font-size:clamp(15px, 2.4vw, 18px); line-height:1.5; color:var(--muted);
+    font-weight:500; max-width:34em;
+  }
+  header p .nm{ color:var(--accent); font-weight:700; }
+
+  /* ---------- form card ---------- */
+  .card{
+    width:100%; background:var(--card); border-radius:20px;
+    border:1px solid rgba(75,59,214,0.12);
+    box-shadow:0 18px 50px -20px rgba(46,33,120,0.28);
+    padding:8px; overflow:hidden;
+  }
+  /* Fixed height is a compromise — a cross-origin embed can't self-size. Values
+     are the measured content height at the WIDEST width of each bucket (tallest
+     case): desktop bucket iframe 496→696px → 540→477px, so 560px covers it;
+     mobile bucket 290→512px → 810→540px, so 850px (see @media). Error/confirmation
+     states differ slightly; the small surplus absorbs a validation line. */
+  .form-frame{
+    display:block; width:100%; height:560px; border:0; border-radius:14px;
+    background:var(--card);
+  }
+
+  /* ---------- footer ---------- */
+  .footer{ text-align:center; }
+  .footer p{ font-size:14px; line-height:1.5; color:var(--muted); font-weight:500; }
+  .footer a{ color:var(--accent); text-decoration:none; font-weight:600; }
+  .footer a:hover{ text-decoration:underline; }
+
+  @media (max-width:560px){
+    .page{ padding:40px 16px 56px; }
+    .form-frame{ height:850px; }
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <img class="logo" src="assets/logo.png" alt="Use Multiple Chat AI at Once">
+      <h1>We're sorry to see you go.</h1>
+      <p>Before you go, could you tell us why you uninstalled <span class="nm">Use Multiple Chat AI at Once</span>? Your feedback takes a minute and helps us make it better.</p>
+    </header>
+
+    <!-- Google Form embedded via iframe. `?embedded=true` renders the compact
+         embed layout (no Google chrome). The form keeps Google's own styling;
+         only the surrounding page is branded. -->
+    <div class="card">
+      <iframe
+        class="form-frame"
+        src="https://docs.google.com/forms/d/e/1FAIpQLSdUc-1w_TJ35KQHQ3FEzERgoZolSWINqYHRc1YxcJbOnSeWmA/viewform?embedded=true"
+        title="Uninstall feedback form"
+        loading="lazy">Loading…</iframe>
+    </div>
+
+    <div class="footer">
+      <p id="reinstall" hidden>Changed your mind? <a id="reinstall-link" href="#">Reinstall from the Chrome Web Store</a>.</p>
+      <p>Thank you for trying it — your feedback means a lot.</p>
+    </div>
+  </div>
+
+  <!-- Localized name + Yandex.Metrika (external page only; no extension code here).
+       Reads the URL fragment the extension wrote at uninstall, then inits Metrika
+       so both visit params land in the first pageview. Falls back to the static
+       English name when opened without a fragment. Mirrors welcome.html. -->
+  <script type="text/javascript">
+    // ── Named constants (no magic values) ──────────────────────────────────────
+    var YM_COUNTER_ID = 110166603;
+    var YM_TAG_SRC = 'https://mc.yandex.ru/metrika/tag.js?id=' + YM_COUNTER_ID;
+
+    // Visit-parameter keys exposed in Metrika reports.
+    var EXTENSION_NAME_PARAM_KEY = 'extension_name';
+    var EXTENSION_LOCALE_PARAM_KEY = 'extension_locale';
+
+    // Fragment parameter names — CONTRACT with the extension (shared/constants.js
+    // WELCOME_FRAGMENT_PARAM). Must match byte-for-byte. The name value is the
+    // manifest `name` (what the Chrome Web Store displays); the id is
+    // chrome.runtime.id.
+    var FRAGMENT_PARAM_NAME = 'name';
+    var FRAGMENT_PARAM_LOCALE = 'locale';
+    var FRAGMENT_PARAM_ID = 'id';
+
+    var HEADING_NAME_SELECTOR = '.nm';
+
+    // Chrome Web Store detail base — mirrors WEBSTORE_DETAIL_URL_BASE in
+    // shared/constants.js (buildWebstoreDetailUrl). The extension id is appended
+    // as a path segment to build the "reinstall" link; works before publication.
+    var WEBSTORE_DETAIL_URL_BASE = 'https://chromewebstore.google.com/detail';
+    var REINSTALL_WRAP_ID = 'reinstall';
+    var REINSTALL_LINK_ID = 'reinstall-link';
+
+    // ── 1) Read the fragment the extension wrote at uninstall ────────────────────
+    // NB: do NOT name this var `name` — at global script scope `var name` aliases
+    // `window.name`, which coerces to a string ("null" when the param is absent)
+    // and would overwrite the fallback name.
+    var fragment = new URLSearchParams(location.hash.slice(1));
+    var displayName = fragment.get(FRAGMENT_PARAM_NAME);
+    var locale = fragment.get(FRAGMENT_PARAM_LOCALE);
+    var extensionId = fragment.get(FRAGMENT_PARAM_ID);
+
+    // ── 2) Show the localized name (textContent only). Missing → English fallback.
+    if (displayName) {
+      document.querySelector(HEADING_NAME_SELECTOR).textContent = displayName;
+    }
+
+    // ── 2b) Build the "reinstall" link from the id and reveal it. Missing id →
+    //        stays hidden (no broken link on a static, pre-publication page).
+    if (extensionId) {
+      document.getElementById(REINSTALL_LINK_ID).href =
+        WEBSTORE_DETAIL_URL_BASE + '/' + encodeURIComponent(extensionId);
+      document.getElementById(REINSTALL_WRAP_ID).hidden = false;
+    }
+
+    // ── 3) Build visit params from those two values only — nothing else. ─────────
+    var visitParams = {};
+    if (displayName) visitParams[EXTENSION_NAME_PARAM_KEY] = displayName;
+    if (locale) visitParams[EXTENSION_LOCALE_PARAM_KEY] = locale;
+
+    // ── 4) Strip the fragment before init so the name is reported only as a visit
+    //       param, never inside the page URL (keeps it out of webvisor/hit URLs).
+    if (location.hash) {
+      history.replaceState(null, '', location.pathname + location.search);
+    }
+
+    // ── 5) Init Metrika after the fragment is read → both params in first pageview.
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document, 'script', YM_TAG_SRC, 'ym');
+
+    ym(YM_COUNTER_ID, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true, params: visitParams});
+  </script>
+  <!-- noscript fallback pixel mirrors YM_COUNTER_ID (110166603) -->
+  <noscript><div><img src="https://mc.yandex.ru/watch/110166603" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+</body>
+</html>
