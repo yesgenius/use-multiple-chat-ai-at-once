@@ -51,25 +51,30 @@
     box-shadow:0 18px 50px -20px rgba(46,33,120,0.28);
     padding:8px; overflow:hidden;
   }
-  /* Fixed height is a compromise — a cross-origin embed can't self-size. Values
-     are the measured content height at the WIDEST width of each bucket (tallest
-     case): desktop bucket iframe 496→696px → 540→477px, so 560px covers it;
-     mobile bucket 290→512px → 810→540px, so 850px (see @media). Error/confirmation
-     states differ slightly; the small surplus absorbs a validation line. */
+  /* Fixed height is a compromise — a cross-origin embed can't self-size. Measured
+     empty-form content (tallest width of each bucket): desktop ≤540px, mobile
+     ≤810px. Heights below add ~100px headroom so a couple of typed answer lines
+     fit before the iframe scrolls internally; a long answer still scrolls (the
+     auto-growing textarea is unbounded — unavoidable for a cross-origin embed). */
   .form-frame{
-    display:block; width:100%; height:560px; border:0; border-radius:14px;
+    display:block; width:100%; height:650px; border:0; border-radius:14px;
     background:var(--card);
   }
 
-  /* ---------- footer ---------- */
+  /* ---------- footer: secondary reinstall action ---------- */
   .footer{ text-align:center; }
-  .footer p{ font-size:14px; line-height:1.5; color:var(--muted); font-weight:500; }
-  .footer a{ color:var(--accent); text-decoration:none; font-weight:600; }
-  .footer a:hover{ text-decoration:underline; }
+  .reinstall{ margin:0; }
+  .reinstall-btn{
+    display:inline-block; padding:11px 24px;
+    border:1.5px solid var(--accent); border-radius:999px;
+    color:var(--accent); font-weight:600; font-size:15px; line-height:1;
+    text-decoration:none; transition:background-color .15s ease, color .15s ease;
+  }
+  .reinstall-btn:hover{ background:var(--accent); color:#fff; }
 
   @media (max-width:560px){
     .page{ padding:40px 16px 56px; }
-    .form-frame{ height:850px; }
+    .form-frame{ height:950px; }
   }
 </style>
 </head>
@@ -92,7 +97,9 @@
     </div>
 
     <div class="footer">
-      <p id="reinstall" hidden>Changed your mind? <a id="reinstall-link" href="#">Reinstall from the Chrome Web Store</a>.</p>
+      <p id="reinstall" class="reinstall" hidden>
+        <a id="reinstall-link" class="reinstall-btn" href="#">Reinstall from the Chrome Web Store</a>
+      </p>
     </div>
   </div>
 
