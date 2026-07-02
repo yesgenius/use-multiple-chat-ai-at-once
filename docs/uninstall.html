@@ -11,70 +11,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="pages.css">
 <style>
-  :root{
-    --accent:#4B3BD6;
-    --ink:#251f49;
-    --muted:#6c6790;
-    --bg:#faf9f5;
-    --card:#ffffff;
-  }
-  *{ margin:0; padding:0; box-sizing:border-box; }
-  html,body{ background:var(--bg); }
-  body{
-    font-family:'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    color:var(--ink);
-    min-height:100vh;
-    -webkit-font-smoothing:antialiased;
-  }
-  .page{
-    width:100%; max-width:760px; margin:0 auto;
-    padding:56px 24px 72px;
-    display:flex; flex-direction:column; align-items:center; gap:28px;
-  }
-
-  /* ---------- header ---------- */
+  /* Page-specific only — shared tokens/reset/body/logo/card-column live in pages.css. */
   header{ display:flex; flex-direction:column; align-items:center; gap:16px; text-align:center; }
-  .logo{
-    width:64px; height:64px; border-radius:16px;
-    box-shadow:0 12px 30px -10px rgba(75,59,214,0.5); display:block;
-  }
   h1{
-    font-size:clamp(28px, 5vw, 40px); line-height:1.1; font-weight:800; letter-spacing:-0.02em;
-    color:var(--ink);
-  }
-
-  /* ---------- form card ---------- */
-  .card{
-    width:100%; background:var(--card); border-radius:20px;
-    border:1px solid rgba(75,59,214,0.12);
-    box-shadow:0 18px 50px -20px rgba(46,33,120,0.28);
-    padding:8px; overflow:hidden;
-  }
-  /* Fixed height is a compromise — a cross-origin embed can't self-size. Measured
-     empty-form content (tallest width of each bucket): desktop ≤540px, mobile
-     ≤810px. Heights below add ~100px headroom so a couple of typed answer lines
-     fit before the iframe scrolls internally; a long answer still scrolls (the
-     auto-growing textarea is unbounded — unavoidable for a cross-origin embed). */
-  .form-frame{
-    display:block; width:100%; height:650px; border:0; border-radius:14px;
-    background:var(--card);
-  }
-
-  /* ---------- footer: secondary reinstall action ---------- */
-  .footer{ text-align:center; }
-  .reinstall{ margin:0; }
-  .reinstall-btn{
-    display:inline-block; padding:11px 24px;
-    border:1.5px solid var(--accent); border-radius:999px;
-    color:var(--accent); font-weight:600; font-size:15px; line-height:1;
-    text-decoration:none; transition:background-color .15s ease, color .15s ease;
-  }
-  .reinstall-btn:hover{ background:var(--accent); color:#fff; }
-
-  @media (max-width:560px){
-    .page{ padding:40px 16px 56px; }
-    .form-frame{ height:950px; }
+    font-size:clamp(28px, 5vw, 40px); line-height:1.1; color:var(--ink);
   }
 </style>
 </head>
@@ -103,27 +45,12 @@
     </div>
   </div>
 
-  <!-- Reinstall link + Yandex.Metrika (external page only; no extension code here).
-       Reads the URL fragment the extension wrote at uninstall, builds the store
-       reinstall link from the id, then inits Metrika so name/locale land as visit
-       params in the first pageview. Mirrors welcome.html. -->
+  <!-- Shared Metrika bootstrap: parses the fragment → window.PAGE_FRAGMENT,
+       inits Yandex.Metrika (external page only; no extension code here). -->
+  <script src="metrika.js"></script>
+
+  <!-- Page-specific: build the reinstall link from the id the extension wrote. -->
   <script type="text/javascript">
-    // ── Named constants (no magic values) ──────────────────────────────────────
-    var YM_COUNTER_ID = 110166603;
-    var YM_TAG_SRC = 'https://mc.yandex.ru/metrika/tag.js?id=' + YM_COUNTER_ID;
-
-    // Visit-parameter keys exposed in Metrika reports.
-    var EXTENSION_NAME_PARAM_KEY = 'extension_name';
-    var EXTENSION_LOCALE_PARAM_KEY = 'extension_locale';
-
-    // Fragment parameter names — CONTRACT with the extension (shared/constants.js
-    // WELCOME_FRAGMENT_PARAM). Must match byte-for-byte. The name value is the
-    // manifest `name` (what the Chrome Web Store displays); the id is
-    // chrome.runtime.id.
-    var FRAGMENT_PARAM_NAME = 'name';
-    var FRAGMENT_PARAM_LOCALE = 'locale';
-    var FRAGMENT_PARAM_ID = 'id';
-
     // Chrome Web Store detail base — mirrors WEBSTORE_DETAIL_URL_BASE in
     // shared/constants.js (buildWebstoreDetailUrl). The extension id is appended
     // as a path segment to build the "reinstall" link; works before publication.
@@ -131,45 +58,16 @@
     var REINSTALL_WRAP_ID = 'reinstall';
     var REINSTALL_LINK_ID = 'reinstall-link';
 
-    // ── 1) Read the fragment the extension wrote at uninstall ────────────────────
-    // NB: do NOT name this var `name` — at global script scope `var name` aliases
-    // `window.name`, which coerces to a string ("null" when the param is absent)
-    // and would overwrite the fallback name.
-    var fragment = new URLSearchParams(location.hash.slice(1));
-    var displayName = fragment.get(FRAGMENT_PARAM_NAME);
-    var locale = fragment.get(FRAGMENT_PARAM_LOCALE);
-    var extensionId = fragment.get(FRAGMENT_PARAM_ID);
-
-    // ── 2) Build the "reinstall" link from the id and reveal it. Missing id →
-    //        stays hidden (no broken link on a static, pre-publication page).
-    if (extensionId) {
+    // Build the "reinstall" link from the id and reveal it. Missing id → stays
+    // hidden (no broken link on a static, pre-publication page).
+    var frag = window.PAGE_FRAGMENT || {};
+    if (frag.id) {
       document.getElementById(REINSTALL_LINK_ID).href =
-        WEBSTORE_DETAIL_URL_BASE + '/' + encodeURIComponent(extensionId);
+        WEBSTORE_DETAIL_URL_BASE + '/' + encodeURIComponent(frag.id);
       document.getElementById(REINSTALL_WRAP_ID).hidden = false;
     }
-
-    // ── 3) Build visit params from those two values only — nothing else. ─────────
-    var visitParams = {};
-    if (displayName) visitParams[EXTENSION_NAME_PARAM_KEY] = displayName;
-    if (locale) visitParams[EXTENSION_LOCALE_PARAM_KEY] = locale;
-
-    // ── 4) Strip the fragment before init so the name is reported only as a visit
-    //       param, never inside the page URL (keeps it out of webvisor/hit URLs).
-    if (location.hash) {
-      history.replaceState(null, '', location.pathname + location.search);
-    }
-
-    // ── 5) Init Metrika after the fragment is read → both params in first pageview.
-    (function(m,e,t,r,i,k,a){
-        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-        m[i].l=1*new Date();
-        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-    })(window, document, 'script', YM_TAG_SRC, 'ym');
-
-    ym(YM_COUNTER_ID, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true, params: visitParams});
   </script>
-  <!-- noscript fallback pixel mirrors YM_COUNTER_ID (110166603) -->
+  <!-- noscript fallback pixel mirrors the Metrika counter id (110166603) -->
   <noscript><div><img src="https://mc.yandex.ru/watch/110166603" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 </body>
 </html>

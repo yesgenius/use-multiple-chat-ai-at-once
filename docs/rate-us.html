@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thanks for rating us</title>
+<meta name="description" content="Thanks for rating Use Multiple Chat AI at Once.">
+<meta name="theme-color" content="#4B3BD6">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Preconnect to Metrika so the positive-path goal hit can complete before the
+     redirect timeout fires (covers a cold tag.js load, not just the hit RTT). -->
+<link rel="preconnect" href="https://mc.yandex.ru">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="pages.css">
+<style>
+  /* Page-specific — shared tokens/reset/body/logo/card-column live in pages.css. */
+  /* The two states are <section class="page" hidden> and .page sets display:flex,
+     which would otherwise beat the UA [hidden] rule — force hidden to win so the
+     inactive state never shows (only one section is ever un-hidden by JS). */
+  [hidden]{ display:none !important; }
+  header{ display:flex; flex-direction:column; align-items:center; gap:16px; text-align:center; }
+  h1{ font-size:clamp(28px, 5vw, 40px); line-height:1.1; color:var(--ink); }
+  .subtitle{ font-size:16px; line-height:1.5; color:var(--muted); font-weight:500; max-width:34em; }
+
+  /* ---------- positive-path interstitial ---------- */
+  .interstitial{
+    display:flex; flex-direction:column; align-items:center; gap:20px; text-align:center;
+    padding-top:8px;
+  }
+  .stars{ font-size:40px; line-height:1; color:#F5A623; letter-spacing:4px; }
+  .status{
+    display:inline-flex; align-items:center; gap:12px;
+    font-size:17px; font-weight:600; color:var(--muted);
+  }
+  .spinner{
+    width:20px; height:20px; border-radius:50%;
+    border:3px solid rgba(75,59,214,0.25); border-top-color:var(--accent);
+    animation:spin 0.8s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .fallback{
+    color:var(--accent); font-weight:600; font-size:15px; text-decoration:none;
+    border-bottom:1.5px solid rgba(75,59,214,0.4);
+  }
+  .fallback:hover{ border-bottom-color:var(--accent); }
+
+  /* ---------- negative-path feedback form ----------
+     This is a DIFFERENT Google form from uninstall's, so its height differs.
+     Measured content height (headless Chromium, max per bucket, opened at each
+     bucket's iframe *content* width on a short viewport):
+       desktop max 854px (@496px content width),
+       mobile  max 1099px (@290px content width).
+     Heights below add ~+100px headroom so a couple of typed answer lines fit
+     before the iframe scrolls internally; a long free-text answer still scrolls
+     the iframe internally — unavoidable for a cross-origin embed. */
+  .form-frame{ height:950px; }
+  @media (max-width:560px){
+    .form-frame{ height:1200px; }
+  }
+</style>
+</head>
+<body>
+  <!-- POSITIVE: short branded interstitial shown before the Store redirect. -->
+  <section id="interstitial" class="page" hidden>
+    <header>
+      <img class="logo" src="assets/logo.png" alt="Use Multiple Chat AI at Once">
+      <h1>Thank you!</h1>
+    </header>
+    <div class="interstitial">
+      <div class="stars" id="stars" aria-hidden="true">★★★★★</div>
+      <div class="status">
+        <span class="spinner" aria-hidden="true"></span>
+        <span>Taking you to the Chrome Web Store…</span>
+      </div>
+      <a id="store-fallback" class="fallback" href="#">Open the store →</a>
+    </div>
+  </section>
+
+  <!-- NEGATIVE: branded wrapper around the embedded Google feedback form. -->
+  <section id="feedback" class="page" hidden>
+    <header>
+      <img class="logo" src="assets/logo.png" alt="Use Multiple Chat AI at Once">
+      <h1>Thanks for your feedback</h1>
+      <p class="subtitle">Tell us what went wrong so we can fix it.</p>
+    </header>
+    <div class="card">
+      <iframe
+        class="form-frame"
+        src="https://docs.google.com/forms/d/e/1FAIpQLSeJlTf9EoVQXNNlMtttUd48UGOO13XoM0MjkxmVTq1CAyiyJQ/viewform?embedded=true"
+        title="Rate-us feedback form"
+        loading="lazy">Loading…</iframe>
+    </div>
+  </section>
+
+  <!-- Shared Metrika bootstrap: parses the fragment → window.PAGE_FRAGMENT,
+       inits Yandex.Metrika, exposes window.Metrika (external page only; no
+       extension code here). -->
+  <script src="metrika.js"></script>
+
+  <!-- Page-specific: route on the rating and record it in Metrika. -->
+  <script type="text/javascript">
+    // Mirrors of shared/constants.js SSOT — guarded by
+    // tests/unit/pages/contract-mirror.test.js so they cannot silently drift.
+    var POSITIVE_THRESHOLD = 4;            // MIRRORS RATE_US_POSITIVE_THRESHOLD (anchored guard)
+    var STORE_BASE = 'https://chromewebstore.google.com/detail'; // MIRRORS WEBSTORE_DETAIL_URL_BASE
+    var GOAL_ROLLUP = 'rate_us';           // MIRRORS RATE_US_METRIKA_GOAL
+    var GOAL_PREFIX = 'rate_us_';          // MIRRORS RATE_US_METRIKA_GOAL_PREFIX (+rating → per-value goal)
+    var DEST_WEBSTORE = 'chrome_webstore'; // MIRRORS RATE_US_DEST_WEBSTORE
+    var DEST_FEEDBACK = 'feedback_form';   // MIRRORS RATE_US_DEST_FEEDBACK
+    var REDIRECT_TIMEOUT_MS = 1500;        // MUST cover a cold tag.js load, not just the hit RTT
+
+    var STAR = '★';
+
+    var frag = window.PAGE_FRAGMENT || {};
+    var raw = parseInt(frag.rating, 10);
+    var rating = (raw >= 1 && raw <= 5) ? raw : null;  // validate 1..5 (reject NaN/0/6+)
+    var id = frag.id;
+
+    // Per-value goal (separate conversion per rating) + rollup goal (total +
+    // segmentable). Only ever called with a validated rating (1..5), so
+    // rate_us_0 can never be sent.
+    function goalsFor(r, dest) {
+      return [
+        { goal: GOAL_PREFIX + r, params: { destination: dest } },
+        { goal: GOAL_ROLLUP,     params: { rating: r, destination: dest } },
+      ];
+    }
+
+    // showInterstitial()/showFeedbackForm() only toggle `hidden` on the two
+    // static sections (both present in markup) → no wrong-state flash.
+    function showInterstitial(r) {
+      document.getElementById('stars').textContent = new Array(r + 1).join(STAR);
+      document.getElementById('interstitial').hidden = false;
+    }
+    function showFeedbackForm() {
+      document.getElementById('feedback').hidden = false;
+    }
+
+    if (rating && rating >= POSITIVE_THRESHOLD && id) {
+      // POSITIVE — interstitial + goals + redirect.
+      showInterstitial(rating);
+      var storeUrl = STORE_BASE + '/' + encodeURIComponent(id) + '/reviews';
+      document.getElementById('store-fallback').href = storeUrl;  // manual fallback always works
+      if (window.Metrika) {
+        window.Metrika.reachGoalsThenRedirect(goalsFor(rating, DEST_WEBSTORE), storeUrl, REDIRECT_TIMEOUT_MS);
+      } else {
+        location.replace(storeUrl);   // metrika.js failed to load (rare, same-origin): still redirect
+      }
+    } else if (rating) {
+      // NEGATIVE — valid rating < threshold (or positive without id): embedded form + goals.
+      showFeedbackForm();
+      if (window.Metrika) window.Metrika.reachGoals(goalsFor(rating, DEST_FEEDBACK));
+    } else {
+      // NO/INVALID rating — stray direct visit: show the form, fire NO goal (do
+      // not pollute rate_us / rate_us_* with a rating-0 event).
+      showFeedbackForm();
+    }
+  </script>
+  <!-- noscript fallback pixel mirrors the Metrika counter id (110166603) -->
+  <noscript><div><img src="https://mc.yandex.ru/watch/110166603" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+</body>
+</html>

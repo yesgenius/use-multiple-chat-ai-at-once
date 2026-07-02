@@ -1,0 +1,80 @@
+/*
+ * Shared stylesheet for the hosted pages (welcome / uninstall / rate-us).
+ *
+ * Single source of truth for the design tokens, reset, body typography, logo,
+ * and — for the card-column pages (uninstall + rate-us) — the .page/.card/
+ * .form-frame/.footer/.reinstall layout. welcome.html consumes only the
+ * tokens/reset/body/logo/h1 base and keeps its bespoke --u-scaled layout inline
+ * under a .welcome container (it deliberately does NOT reuse .page).
+ *
+ * External page only — no extension code references this file.
+ */
+
+/* ---------- design tokens ---------- */
+:root{
+  --accent:#4B3BD6;
+  --ink:#251f49;
+  --muted:#6c6790;
+  --bg:#faf9f5;
+  --card:#ffffff;
+}
+
+/* ---------- reset + body ---------- */
+*{ margin:0; padding:0; box-sizing:border-box; }
+html,body{ background:var(--bg); }
+body{
+  font-family:'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  color:var(--ink);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- shared brand primitives ---------- */
+.logo{
+  width:64px; height:64px; border-radius:16px;
+  box-shadow:0 12px 30px -10px rgba(75,59,214,0.5); display:block;
+}
+h1{
+  font-weight:800; letter-spacing:-0.02em;
+}
+
+/* ---------- card-column layout (uninstall + rate-us) ---------- */
+.page{
+  width:100%; max-width:760px; margin:0 auto;
+  padding:56px 24px 72px;
+  display:flex; flex-direction:column; align-items:center; gap:28px;
+}
+
+.card{
+  width:100%; background:var(--card); border-radius:20px;
+  border:1px solid rgba(75,59,214,0.12);
+  box-shadow:0 18px 50px -20px rgba(46,33,120,0.28);
+  padding:8px; overflow:hidden;
+}
+/* Fixed height is a compromise — a cross-origin embed can't self-size. The
+   default height is sized for the uninstall form (measured empty-form content,
+   tallest width of each bucket: desktop ≤540px, mobile ≤810px; +~100px headroom
+   so a couple of typed answer lines fit before the iframe scrolls internally). A
+   page whose embedded form differs (rate-us) overrides .form-frame height in its
+   own inline <style> (see rate-us.html for that form's measured numbers). A long
+   answer still scrolls the iframe internally — unavoidable for a cross-origin
+   embed. */
+.form-frame{
+  display:block; width:100%; height:650px; border:0; border-radius:14px;
+  background:var(--card);
+}
+
+.footer{ text-align:center; }
+.reinstall{ margin:0; }
+.reinstall-btn{
+  display:inline-block; padding:11px 24px;
+  border:1.5px solid var(--accent); border-radius:999px;
+  color:var(--accent); font-weight:600; font-size:15px; line-height:1;
+  text-decoration:none; transition:background-color .15s ease, color .15s ease;
+}
+.reinstall-btn:hover{ background:var(--accent); color:#fff; }
+
+@media (max-width:560px){
+  .page{ padding:40px 16px 56px; }
+  .form-frame{ height:950px; }
+}
