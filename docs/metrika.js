@@ -24,7 +24,7 @@
   'use strict';
 
   // ── Named constants (No Magic Values) ──────────────────────────────────────
-  var YM_COUNTER_ID = 110166603;
+  var YM_COUNTER_ID = 110166603; // MIRRORS YM_COUNTER_ID (shared/constants.js); also in every page's noscript pixel
   var YM_TAG_SRC = 'https://mc.yandex.ru/metrika/tag.js?id=' + YM_COUNTER_ID;
 
   // Fragment parameter names — CONTRACT with the extension (shared/constants.js
@@ -37,6 +37,19 @@
   // Metrika visit-parameter keys (page-internal; No Magic Values).
   var LOCALE_PARAM_KEY = 'locale';
   var LANGUAGE_PARAM_KEY = 'language';
+
+  // Metrika init options (No Magic Values). Trimmed to what these static pages
+  // actually use. Deliberately OFF: webvisor (session replay — low value here,
+  // adds load weight + privacy footprint on a removal/rating page), clickmap
+  // (heatmap — not needed for open-counting), ecommerce/ssr (not applicable to
+  // static pages). `referrer`/`url` are omitted because they are Metrika's own
+  // defaults, and the fragment is already stripped before init (below), so no
+  // rating/name can leak into the hit URL. Kept: trackLinks (outbound reinstall
+  // / store link clicks) and accurateTrackBounce. `params` is attached per-page.
+  var YM_INIT_OPTIONS = {
+    trackLinks: true,
+    accurateTrackBounce: true,
+  };
 
   // ── 1) Parse the fragment once; expose it before stripping. ────────────────
   var fragment = new URLSearchParams(location.hash.slice(1));
@@ -68,7 +81,8 @@
     k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a);
   })(window, document, 'script', YM_TAG_SRC, 'ym');
 
-  ym(YM_COUNTER_ID, 'init', { ssr: true, webvisor: true, clickmap: true, ecommerce: "dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce: true, trackLinks: true, params: visitParams });
+  YM_INIT_OPTIONS.params = visitParams; // attach locale/language to the first pageview
+  ym(YM_COUNTER_ID, 'init', YM_INIT_OPTIONS);
 
   // ── 5) Tiny API closing over the counter id. ───────────────────────────────
   window.Metrika = {

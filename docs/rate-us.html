@@ -106,11 +106,10 @@
     // tests/unit/pages/contract-mirror.test.js so they cannot silently drift.
     var POSITIVE_THRESHOLD = 4;            // MIRRORS RATE_US_POSITIVE_THRESHOLD (anchored guard)
     var STORE_BASE = 'https://chromewebstore.google.com/detail'; // MIRRORS WEBSTORE_DETAIL_URL_BASE
-    var GOAL_ROLLUP = 'rate_us';           // MIRRORS RATE_US_METRIKA_GOAL
-    var GOAL_PREFIX = 'rate_us_';          // MIRRORS RATE_US_METRIKA_GOAL_PREFIX (+rating → per-value goal)
+    var GOAL_RATE_US = 'rate_us_submitted'; // MIRRORS RATE_US_METRIKA_GOAL
     var DEST_WEBSTORE = 'chrome_webstore'; // MIRRORS RATE_US_DEST_WEBSTORE
     var DEST_FEEDBACK = 'feedback_form';   // MIRRORS RATE_US_DEST_FEEDBACK
-    var REDIRECT_TIMEOUT_MS = 1500;        // MUST cover a cold tag.js load, not just the hit RTT
+    var REDIRECT_TIMEOUT_MS = 2500;        // MUST cover a cold tag.js load on slow networks, not just the hit RTT
 
     var STAR = '★';
 
@@ -119,13 +118,13 @@
     var rating = (raw >= 1 && raw <= 5) ? raw : null;  // validate 1..5 (reject NaN/0/6+)
     var id = frag.id;
 
-    // Per-value goal (separate conversion per rating) + rollup goal (total +
-    // segmentable). Only ever called with a validated rating (1..5), so
-    // rate_us_0 can never be sent.
+    // Single goal per rating; the star value and routing outcome ride as visit
+    // params (rating 1..5, destination). The rating distribution and the
+    // happy/unhappy split are read from Metrika's Visit-parameters report — no
+    // per-rating goals. Only ever called with a validated rating (1..5).
     function goalsFor(r, dest) {
       return [
-        { goal: GOAL_PREFIX + r, params: { destination: dest } },
-        { goal: GOAL_ROLLUP,     params: { rating: r, destination: dest } },
+        { goal: GOAL_RATE_US, params: { rating: r, destination: dest } },
       ];
     }
 

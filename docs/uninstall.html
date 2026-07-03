@@ -57,6 +57,7 @@
     var WEBSTORE_DETAIL_URL_BASE = 'https://chromewebstore.google.com/detail';
     var REINSTALL_WRAP_ID = 'reinstall';
     var REINSTALL_LINK_ID = 'reinstall-link';
+    var UNINSTALL_GOAL = 'uninstall_opened';   // MIRRORS UNINSTALL_METRIKA_GOAL (shared/constants.js)
 
     // Build the "reinstall" link from the id and reveal it. Missing id → stays
     // hidden (no broken link on a static, pre-publication page).
@@ -66,6 +67,11 @@
         WEBSTORE_DETAIL_URL_BASE + '/' + encodeURIComponent(frag.id);
       document.getElementById(REINSTALL_WRAP_ID).hidden = false;
     }
+
+    // Rollup goal fired once per uninstall-page open (symmetric with welcome).
+    // Per-locale breakdown comes from the locale/language visit params on the
+    // same visit — no per-locale goals (there are 53 locales).
+    if (window.Metrika) window.Metrika.reachGoals([{ goal: UNINSTALL_GOAL, params: {} }]);
   </script>
   <!-- noscript fallback pixel mirrors the Metrika counter id (110166603) -->
   <noscript><div><img src="https://mc.yandex.ru/watch/110166603" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
