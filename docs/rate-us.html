@@ -122,9 +122,14 @@
     // params (rating 1..5, destination). The rating distribution and the
     // happy/unhappy split are read from Metrika's Visit-parameters report — no
     // per-rating goals. Only ever called with a validated rating (1..5).
+    //
+    // `rating` MUST be a STRING: a numeric leaf value is treated by Metrika as a
+    // quantitative measure (it sums/averages it) instead of a discrete category,
+    // so a number would yield NO per-value breakdown and no groupable dimension.
+    // String(r) makes 1..5 distinct rows in the Visit-parameters report.
     function goalsFor(r, dest) {
       return [
-        { goal: GOAL_RATE_US, params: { rating: r, destination: dest } },
+        { goal: GOAL_RATE_US, params: { rating: String(r), destination: dest } },
       ];
     }
 
