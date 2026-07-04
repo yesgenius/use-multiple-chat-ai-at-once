@@ -53,6 +53,26 @@
     window.addEventListener('unhandledrejection', function (ev) {
       dbg('unhandled_rejection', { reason: String(ev && ev.reason).slice(0, 600) });
     });
+    // tag.js swallows its errors and prints them via console.error/console.warn —
+    // window.onerror never sees them, so the plain stack has no message. Wrap the
+    // console methods to surface the ACTUAL message + stack (as a string).
+    ['error', 'warn'].forEach(function (level) {
+      if (!window.console || typeof console[level] !== 'function') return;
+      var orig = console[level].bind(console);
+      console[level] = function () {
+        try {
+          var parts = [];
+          for (var i = 0; i < arguments.length; i++) {
+            var a = arguments[i];
+            if (a instanceof Error) { parts.push(String(a.message) + ' || ' + String(a.stack).slice(0, 500)); }
+            else if (a && typeof a === 'object') { try { parts.push(JSON.stringify(a)); } catch (e) { parts.push(String(a)); } }
+            else { parts.push(String(a)); }
+          }
+          dbg('console_' + level, { args: parts });
+        } catch (e) { /* never break console */ }
+        return orig.apply(console, arguments);
+      };
+    });
   }
 
   // ── Named constants (No Magic Values) ──────────────────────────────────────
