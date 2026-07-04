@@ -23,6 +23,21 @@
 (function () {
   'use strict';
 
+  // ── DEBUG INSTRUMENTATION (TEMPORARY — remove after diagnosing uninstall_opened).
+  //     Every event is one console line, prefix "[Metrika DEBUG]", payload already
+  //     JSON.stringify'd → the whole console can be copied verbatim, no object needs
+  //     mouse-expanding. Set DEBUG = false (or revert this commit) to disable.
+  var DEBUG = true;
+  var START = Date.now();
+  var TAG_LOADED = null;      // true = tag.js onload, false = onerror (blocked), null = unknown
+  var DBG_WATCHDOG_MS = 5000; // after this long, report goal callbacks that never fired
+  function dbg(event, data) {
+    if (!DEBUG) return;
+    var s;
+    try { s = JSON.stringify(data); } catch (e) { s = '"<unstringifiable:' + e + '>"'; }
+    console.log('[Metrika DEBUG] ' + event + ' ' + s);
+  }
+
   // ── Named constants (No Magic Values) ──────────────────────────────────────
   var YM_COUNTER_ID = 110166603; // MIRRORS YM_COUNTER_ID (shared/constants.js); also in every page's noscript pixel
   var YM_TAG_SRC = 'https://mc.yandex.ru/metrika/tag.js?id=' + YM_COUNTER_ID;
@@ -59,6 +74,7 @@
     id: fragment.get(FRAGMENT_PARAM_ID),
     rating: fragment.get(FRAGMENT_PARAM_RATING),
   };
+  dbg('fragment_parsed', { hash: location.hash, fragment: window.PAGE_FRAGMENT });
 
   // ── 2) Build visit params from locale only (name is not a Metrika param). ──
   var loc = window.PAGE_FRAGMENT.locale || '';
@@ -67,6 +83,7 @@
     visitParams[LOCALE_PARAM_KEY] = loc;                                  // exact per-locale key (each of 53)
     visitParams[LANGUAGE_PARAM_KEY] = loc.split(/[_-]/)[0].toLowerCase(); // grouping (e.g. pt)
   }
+  dbg('visit_params', visitParams);
 
   // ── 3) Strip the fragment before init so rating/name never enter hit URLs. ─
   if (location.hash) {
@@ -78,11 +95,19 @@
     m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments); };
     m[i].l = 1 * new Date();
     for (var j = 0; j < document.scripts.length; j++) { if (document.scripts[j].src === r) { return; } }
-    k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a);
+    k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r;
+    if (DEBUG) {
+      k.onload = function () { TAG_LOADED = true; dbg('tagjs_onload', { src: r, atMs: Date.now() - START }); };
+      k.onerror = function () { TAG_LOADED = false; dbg('tagjs_onerror', { src: r, atMs: Date.now() - START }); };
+    }
+    a.parentNode.insertBefore(k, a);
   })(window, document, 'script', YM_TAG_SRC, 'ym');
+
+  dbg('after_loader', { ymType: typeof window.ym, tagSrc: YM_TAG_SRC });
 
   YM_INIT_OPTIONS.params = visitParams; // attach locale/language to the first pageview
   ym(YM_COUNTER_ID, 'init', YM_INIT_OPTIONS);
+  dbg('init_called', { counter: YM_COUNTER_ID, options: YM_INIT_OPTIONS });
 
   // ── 5) Tiny API closing over the counter id. ───────────────────────────────
   window.Metrika = {
@@ -91,9 +116,28 @@
      * @param {{goal:string, params?:object}[]} goals
      */
     reachGoals: function (goals) {
+      dbg('reachGoals_called', { count: goals.length, ymType: typeof window.ym });
+      var delivered = {};
       for (var i = 0; i < goals.length; i++) {
-        ym(YM_COUNTER_ID, 'reachGoal', goals[i].goal, goals[i].params);
+        (function (g) {
+          dbg('reachGoal_send', { counter: YM_COUNTER_ID, goal: g.goal, params: g.params });
+          try {
+            ym(YM_COUNTER_ID, 'reachGoal', g.goal, g.params, function () {
+              delivered[g.goal] = true;
+              dbg('reachGoal_callback', { goal: g.goal, atMs: Date.now() - START });
+            });
+          } catch (e) {
+            dbg('reachGoal_throw', { goal: g.goal, error: String(e) });
+          }
+        })(goals[i]);
       }
+      setTimeout(function () {
+        var pending = [];
+        for (var j = 0; j < goals.length; j++) {
+          if (!delivered[goals[j].goal]) { pending.push(goals[j].goal); }
+        }
+        dbg('reachGoal_watchdog', { pendingCallbacks: pending, ymType: typeof window.ym, tagLoaded: TAG_LOADED });
+      }, DBG_WATCHDOG_MS);
     },
     /**
      * Fire a list of goals, then navigate to `url` — on the LAST goal's callback
@@ -115,4 +159,5 @@
       setTimeout(go, timeoutMs); // hard fallback if Metrika is blocked/slow
     },
   };
+  dbg('api_ready', { hasMetrika: typeof window.Metrika });
 })();
