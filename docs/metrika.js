@@ -37,6 +37,23 @@
     try { s = JSON.stringify(data); } catch (e) { s = '"<unstringifiable:' + e + '>"'; }
     console.log('[Metrika DEBUG] ' + event + ' ' + s);
   }
+  // Capture the ASYNC exception thrown inside tag.js while it drains the ym queue
+  // (our try/catch around ym() can't see it — ym() only enqueues). This prints the
+  // actual error message + location the plain stack trace was missing.
+  if (DEBUG) {
+    window.addEventListener('error', function (ev) {
+      dbg('window_error', {
+        message: ev.message || null,
+        source: ev.filename || null,
+        line: ev.lineno || null,
+        col: ev.colno || null,
+        stack: (ev.error && ev.error.stack) ? String(ev.error.stack).slice(0, 600) : null,
+      });
+    });
+    window.addEventListener('unhandledrejection', function (ev) {
+      dbg('unhandled_rejection', { reason: String(ev && ev.reason).slice(0, 600) });
+    });
+  }
 
   // ── Named constants (No Magic Values) ──────────────────────────────────────
   var YM_COUNTER_ID = 110166603; // MIRRORS YM_COUNTER_ID (shared/constants.js); also in every page's noscript pixel
