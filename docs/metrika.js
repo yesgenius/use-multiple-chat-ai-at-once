@@ -9,9 +9,12 @@
  *     ({ name, locale, id, rating }; missing → null) BEFORE stripping it. The
  *     param names mirror shared/constants.js PAGE_FRAGMENT_PARAM (contract;
  *     guarded by tests/unit/pages/contract-mirror.test.js).
- *  2. Build two Metrika visit params from `locale`: `locale` (raw, the exact
- *     per-locale key so the Parameters report counts each of the 53 locales) and
- *     `language` (the part before `_`/`-`, for grouping). Country is not sent
+ *  2. Build visit params from `locale` + the current page. `locale` is a
+ *     drill-down param: locale → <locale-key> → <page> ('welcome' / 'uninstall'
+ *     / 'rate_us'). Its level1/level2 match the old flat form byte-for-byte, so
+ *     the Parameters report still counts each of the 53 locales; the page label
+ *     only adds an optional level-3 breakdown (opens per page, within a locale).
+ *     `language` is the part before `_`/`-`, for grouping. Country is not sent
  *     (Metrika's IP geo covers it); `name` is fragment-only, not a Metrika param.
  *  3. Strip the fragment (history.replaceState) so rating/name never enter hits.
  *  4. Init Metrika (counter 110166603) with those visit params.
@@ -22,58 +25,6 @@
  */
 (function () {
   'use strict';
-
-  // ── DEBUG INSTRUMENTATION (TEMPORARY — remove after diagnosing uninstall_opened).
-  //     Every event is one console line, prefix "[Metrika DEBUG]", payload already
-  //     JSON.stringify'd → the whole console can be copied verbatim, no object needs
-  //     mouse-expanding. Set DEBUG = false (or revert this commit) to disable.
-  var DEBUG = true;
-  var START = Date.now();
-  var TAG_LOADED = null;      // true = tag.js onload, false = onerror (blocked), null = unknown
-  var DBG_WATCHDOG_MS = 5000; // after this long, report goal callbacks that never fired
-  function dbg(event, data) {
-    if (!DEBUG) return;
-    var s;
-    try { s = JSON.stringify(data); } catch (e) { s = '"<unstringifiable:' + e + '>"'; }
-    console.log('[Metrika DEBUG] ' + event + ' ' + s);
-  }
-  // Capture the ASYNC exception thrown inside tag.js while it drains the ym queue
-  // (our try/catch around ym() can't see it — ym() only enqueues). This prints the
-  // actual error message + location the plain stack trace was missing.
-  if (DEBUG) {
-    window.addEventListener('error', function (ev) {
-      dbg('window_error', {
-        message: ev.message || null,
-        source: ev.filename || null,
-        line: ev.lineno || null,
-        col: ev.colno || null,
-        stack: (ev.error && ev.error.stack) ? String(ev.error.stack).slice(0, 600) : null,
-      });
-    });
-    window.addEventListener('unhandledrejection', function (ev) {
-      dbg('unhandled_rejection', { reason: String(ev && ev.reason).slice(0, 600) });
-    });
-    // tag.js swallows its errors and prints them via console.error/console.warn —
-    // window.onerror never sees them, so the plain stack has no message. Wrap the
-    // console methods to surface the ACTUAL message + stack (as a string).
-    ['error', 'warn'].forEach(function (level) {
-      if (!window.console || typeof console[level] !== 'function') return;
-      var orig = console[level].bind(console);
-      console[level] = function () {
-        try {
-          var parts = [];
-          for (var i = 0; i < arguments.length; i++) {
-            var a = arguments[i];
-            if (a instanceof Error) { parts.push(String(a.message) + ' || ' + String(a.stack).slice(0, 500)); }
-            else if (a && typeof a === 'object') { try { parts.push(JSON.stringify(a)); } catch (e) { parts.push(String(a)); } }
-            else { parts.push(String(a)); }
-          }
-          dbg('console_' + level, { args: parts });
-        } catch (e) { /* never break console */ }
-        return orig.apply(console, arguments);
-      };
-    });
-  }
 
   // ── Named constants (No Magic Values) ──────────────────────────────────────
   var YM_COUNTER_ID = 110166603; // MIRRORS YM_COUNTER_ID (shared/constants.js); also in every page's noscript pixel
@@ -111,16 +62,27 @@
     id: fragment.get(FRAGMENT_PARAM_ID),
     rating: fragment.get(FRAGMENT_PARAM_RATING),
   };
-  dbg('fragment_parsed', { hash: location.hash, fragment: window.PAGE_FRAGMENT });
 
-  // ── 2) Build visit params from locale only (name is not a Metrika param). ──
+  // ── 2) Build visit params from locale + the current page. ──────────────────
+  // `locale` becomes a drill-down: locale → <loc> → <page>. level1/level2 stay
+  // byte-identical to the old flat form (per-locale counts and segments keep
+  // working); the page label only adds an optional level-3 breakdown.
   var loc = window.PAGE_FRAGMENT.locale || '';
+  // Page label = filename without extension, '-'→'_' (welcome | uninstall |
+  // rate_us). Derived straight from the URL — no lookup table to keep in sync.
+  var page = location.pathname.split('/').pop().replace(/\.html$/, '').replace(/-/g, '_');
   var visitParams = {};
   if (loc) {
-    visitParams[LOCALE_PARAM_KEY] = loc;                                  // exact per-locale key (each of 53)
+    // String leaf (page label) → Metrika counts occurrences; a numeric leaf
+    // would be summed as a quantitative measure (same rule as rate-us `rating`).
+    var localeParam = loc; // no filename (e.g. dir URL) → flat locale (still counts per locale)
+    if (page) {
+      localeParam = {};
+      localeParam[loc] = page; // { <loc>: '<page>' } → locale → <loc> → <page>
+    }
+    visitParams[LOCALE_PARAM_KEY] = localeParam;
     visitParams[LANGUAGE_PARAM_KEY] = loc.split(/[_-]/)[0].toLowerCase(); // grouping (e.g. pt)
   }
-  dbg('visit_params', visitParams);
 
   // ── 3) Strip the fragment before init so rating/name never enter hit URLs. ─
   if (location.hash) {
@@ -132,19 +94,11 @@
     m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments); };
     m[i].l = 1 * new Date();
     for (var j = 0; j < document.scripts.length; j++) { if (document.scripts[j].src === r) { return; } }
-    k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r;
-    if (DEBUG) {
-      k.onload = function () { TAG_LOADED = true; dbg('tagjs_onload', { src: r, atMs: Date.now() - START }); };
-      k.onerror = function () { TAG_LOADED = false; dbg('tagjs_onerror', { src: r, atMs: Date.now() - START }); };
-    }
-    a.parentNode.insertBefore(k, a);
+    k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a);
   })(window, document, 'script', YM_TAG_SRC, 'ym');
-
-  dbg('after_loader', { ymType: typeof window.ym, tagSrc: YM_TAG_SRC });
 
   YM_INIT_OPTIONS.params = visitParams; // attach locale/language to the first pageview
   ym(YM_COUNTER_ID, 'init', YM_INIT_OPTIONS);
-  dbg('init_called', { counter: YM_COUNTER_ID, options: YM_INIT_OPTIONS });
 
   // ── 5) Tiny API closing over the counter id. ───────────────────────────────
   window.Metrika = {
@@ -153,28 +107,9 @@
      * @param {{goal:string, params?:object}[]} goals
      */
     reachGoals: function (goals) {
-      dbg('reachGoals_called', { count: goals.length, ymType: typeof window.ym });
-      var delivered = {};
       for (var i = 0; i < goals.length; i++) {
-        (function (g) {
-          dbg('reachGoal_send', { counter: YM_COUNTER_ID, goal: g.goal, params: g.params });
-          try {
-            ym(YM_COUNTER_ID, 'reachGoal', g.goal, g.params, function () {
-              delivered[g.goal] = true;
-              dbg('reachGoal_callback', { goal: g.goal, atMs: Date.now() - START });
-            });
-          } catch (e) {
-            dbg('reachGoal_throw', { goal: g.goal, error: String(e) });
-          }
-        })(goals[i]);
+        ym(YM_COUNTER_ID, 'reachGoal', goals[i].goal, goals[i].params);
       }
-      setTimeout(function () {
-        var pending = [];
-        for (var j = 0; j < goals.length; j++) {
-          if (!delivered[goals[j].goal]) { pending.push(goals[j].goal); }
-        }
-        dbg('reachGoal_watchdog', { pendingCallbacks: pending, ymType: typeof window.ym, tagLoaded: TAG_LOADED });
-      }, DBG_WATCHDOG_MS);
     },
     /**
      * Fire a list of goals, then navigate to `url` — on the LAST goal's callback
@@ -196,5 +131,4 @@
       setTimeout(go, timeoutMs); // hard fallback if Metrika is blocked/slow
     },
   };
-  dbg('api_ready', { hasMetrika: typeof window.Metrika });
 })();
