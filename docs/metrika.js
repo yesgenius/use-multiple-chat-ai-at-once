@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * Shared Yandex.Metrika bootstrap for the hosted pages
  * (welcome / uninstall / rate-us). External page only — no extension code here.
@@ -75,6 +76,7 @@
   if (loc) {
     // String leaf (page label) → Metrika counts occurrences; a numeric leaf
     // would be summed as a quantitative measure (same rule as rate-us `rating`).
+    /** @type {string|Record<string, string>} */
     var localeParam = loc; // no filename (e.g. dir URL) → flat locale (still counts per locale)
     if (page) {
       localeParam = {};
@@ -92,7 +94,7 @@
   // ── 4) Init Metrika after the fragment is read → params in first pageview. ─
   (function (m, e, t, r, i, k, a) {
     m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments); };
-    m[i].l = 1 * new Date();
+    m[i].l = 1 * new Date().getTime();
     for (var j = 0; j < document.scripts.length; j++) { if (document.scripts[j].src === r) { return; } }
     k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a);
   })(window, document, 'script', YM_TAG_SRC, 'ym');
