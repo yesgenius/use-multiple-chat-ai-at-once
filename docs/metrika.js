@@ -1,4 +1,3 @@
-// @ts-check
 /**
  * Shared Yandex.Metrika bootstrap for the hosted pages
  * (welcome / uninstall / rate-us). External page only — no extension code here.
@@ -50,6 +49,15 @@
   // defaults, and the fragment is already stripped before init (below), so no
   // rating/name can leak into the hit URL. Kept: trackLinks (outbound reinstall
   // / store link clicks) and accurateTrackBounce. `params` is attached per-page.
+  /**
+   * Visit parameters attached to the first pageview. A leaf is a string, so the
+   * counter counts occurrences of it; one level of grouping is allowed, which is
+   * how a page label is filed under its locale.
+   *
+   * @typedef {Record<string, string|Record<string, string>>} VisitParams
+   */
+
+  /** @type {{ trackLinks: boolean, accurateTrackBounce: boolean, params?: VisitParams }} */
   var YM_INIT_OPTIONS = {
     trackLinks: true,
     accurateTrackBounce: true,
@@ -71,7 +79,11 @@
   var loc = window.PAGE_FRAGMENT.locale || '';
   // Page label = filename without extension, '-'→'_' (welcome | uninstall |
   // rate_us). Derived straight from the URL — no lookup table to keep in sync.
-  var page = location.pathname.split('/').pop().replace(/\.html$/, '').replace(/-/g, '_');
+  // A split always yields at least one segment, so the pop below has one to
+  // return; the array shape admits none because an empty array has nothing.
+  var lastPathSegment = /** @type {string} */ (location.pathname.split('/').pop());
+  var page = lastPathSegment.replace(/\.html$/, '').replace(/-/g, '_');
+  /** @type {VisitParams} */
   var visitParams = {};
   if (loc) {
     // String leaf (page label) → Metrika counts occurrences; a numeric leaf
@@ -92,6 +104,15 @@
   }
 
   // ── 4) Init Metrika after the fragment is read → params in first pageview. ─
+  // Canonical loader snippet of the third-party counter, kept verbatim: the
+  // annotation below describes its parameter list without touching its text.
+  // The last two names are scratch slots the published text declares as
+  // parameters rather than locals, and the call passes five arguments for seven
+  // names. They are described loosely because the snippet writes a numeric flag
+  // where the element interface declares a boolean one and reads a parent the
+  // node interface declares as possibly absent — both belong to the published
+  // text, which is not this codebase's to restate.
+  /** @type {(m: any, e: Document, t: string, r: string, i: string, k?: any, a?: any) => void} */
   (function (m, e, t, r, i, k, a) {
     m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments); };
     m[i].l = 1 * new Date().getTime();
