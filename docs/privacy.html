@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy — Use Multiple Chat AI at Once</title>
+<meta name="description" content="What the Use Multiple Chat AI at Once extension collects, why, and what you can do about it.">
+<meta name="theme-color" content="#4B3BD6">
+<meta name="referrer" content="no-referrer">
+<link rel="icon" type="image/png" href="assets/logo.png">
+<link rel="stylesheet" href="pages.css">
+<style>
+  /* Page-specific only — tokens/reset/body/logo/h1/.page live in pages.css.
+     This page deliberately loads no web font and no script: it is the one page
+     that states it contacts no third party, so it must not contact one. The
+     shared font stack falls back to the system face. */
+  .page{ align-items:stretch; gap:0; }
+  header{ text-align:center; margin-bottom:40px; }
+  .logo{ margin:0 auto 20px; }
+  h1{ font-size:clamp(28px, 5vw, 40px); line-height:1.15; color:var(--ink); }
+  .updated{ margin-top:12px; color:var(--muted); font-size:15px; }
+
+  main{ font-size:16px; line-height:1.65; }
+  main p, main ul, main table{ margin-bottom:18px; }
+  h2{
+    font-size:22px; font-weight:700; letter-spacing:-0.01em; color:var(--ink);
+    margin:40px 0 14px; padding-top:24px; border-top:1px solid rgba(75,59,214,0.14);
+  }
+  h3{ font-size:17px; font-weight:700; color:var(--ink); margin:26px 0 10px; }
+  main ul{ padding-left:22px; }
+  main li{ margin-bottom:8px; }
+  a{ color:var(--accent); }
+  strong{ font-weight:700; }
+
+  /* The lead block carries the summary; a card separates it from the sections. */
+  .lead{
+    background:var(--card); border:1px solid rgba(75,59,214,0.12); border-radius:20px;
+    box-shadow:0 18px 50px -20px rgba(46,33,120,0.28); padding:24px 28px; margin-bottom:8px;
+  }
+  .lead ul{ margin-bottom:0; }
+  .lead p:last-of-type{ margin-bottom:14px; }
+  .lead + h2{ border-top:0; }
+
+  table{ width:100%; border-collapse:collapse; font-size:15px; }
+  th, td{ text-align:left; vertical-align:top; padding:10px 12px; border-bottom:1px solid rgba(75,59,214,0.12); }
+  th{ font-weight:700; color:var(--ink); }
+  td:first-child{ width:34%; font-weight:600; }
+
+  .contact{ margin-top:40px; padding-top:24px; border-top:1px solid rgba(75,59,214,0.14); color:var(--muted); font-size:15px; }
+
+  @media (max-width:560px){
+    .lead{ padding:20px 18px; }
+    td:first-child{ width:40%; }
+    th, td{ padding:8px 6px; font-size:14px; }
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <img class="logo" src="assets/logo.png" alt="Use Multiple Chat AI at Once">
+      <h1>Privacy Policy</h1>
+      <p class="updated">Last updated: 2026-09-27</p>
+    </header>
+
+    <main>
+      <div class="lead">
+        <p>This policy explains what <strong>Use Multiple Chat AI at Once</strong> (also listed as
+          <strong>Chat with Multiple AI</strong>) collects, why, and what you can do about it. It covers the
+          browser extension and the three web pages we host for it: the welcome page, the rating page
+          and the uninstall page.</p>
+        <p>It is short because the extension collects little. Everything below describes what the code
+          actually does.</p>
+        <ul>
+          <li>Your prompts, your templates, the files and web pages you attach and the answers you
+            receive never reach us. What you send goes only to the AI services you choose.</li>
+          <li>We count installs, ratings and uninstalls, and how long an installation lasted.</li>
+          <li>We identify an installation, not a person. There is no account and no login.</li>
+          <li>Our pages run analytics automatically, but only when the extension itself opens them at
+            one of those moments. We do not ask for consent first, and we do not show advertising.</li>
+        </ul>
+      </div>
+
+      <h2>What stays on your device</h2>
+      <p>The extension stores the following in your browser and never sends it to us:</p>
+      <ul>
+        <li>Prompt templates and the draft you are editing, in the browser's local database. For an
+          attachment they keep only a reference — the address of a web page, or a pointer to a file
+          on your disk — never a copy of its contents.</li>
+        <li>Your settings. Some settings are stored in the browser's synchronised storage, which means
+          your browser may copy them between your own signed-in profiles. That is the browser's
+          mechanism, not a transfer to us.</li>
+        <li>A random identifier for the installation and the moment it was installed (see below).</li>
+      </ul>
+      <p>Clearing the extension's data from its settings removes this local data. It does not remove
+        anything from the analytics services or from our web pages' cookies — those are described
+        further down.</p>
+
+      <h2>What the extension does on web pages</h2>
+      <p>The extension is declared with access to all websites. It needs that access for three things:
+        to work with whichever AI services you choose, to show its button on the pages you open, and to
+        read a web page you attach to a prompt. What it does depends on the page.</p>
+
+      <h3>On AI service pages</h3>
+      <p>On the pages of the AI services configured in the extension, when you send a prompt, it:</p>
+      <ul>
+        <li>puts your prompt into the input field and attaches your files;</li>
+        <li>reads <strong>your own</strong> message in the conversation to confirm the prompt was
+          actually sent. It does not read the assistant's replies — the code has no selector for
+          them.</li>
+      </ul>
+
+      <h3>On any other web page</h3>
+      <ul>
+        <li><strong>The extension button.</strong> A small button at the edge of the window opens the
+          extension. It lives in its own isolated element and does not read, change or send the
+          content of the page. You can turn it off in the extension's settings.</li>
+        <li><strong>The page menu.</strong> When you right-click a page, the extension's menu items
+          offer to attach that page's address to a prompt. Nothing is taken from the page unless you
+          choose one, and then only its address is added. You can turn these items off in the
+          extension's settings.</li>
+      </ul>
+
+      <h3>Web pages you attach to a prompt</h3>
+      <p>When you attach a web address and send the prompt, the extension fetches it. An address that
+        leads to a file is downloaded; an address that leads to a web page is opened in a visible tab,
+        and the extension reads the text of that page. Both use your existing session with that site,
+        so a page that requires you to be signed in is read as you would see it. The tab stays open so
+        you can check what was read.</p>
+      <p>The downloaded file or the page text goes, together with your prompt, only to the AI services
+        you selected. It is not stored beyond that send. Files you attach from your disk are read at
+        the moment you send, in the same way.</p>
+
+      <h3>Your tabs</h3>
+      <p>The extension reads the addresses and titles of your tabs, which is a consequence of the tab
+        permission, and uses them locally to route the prompt and to reuse a tab that is already
+        open.</p>
+      <p>None of this is transmitted to us.</p>
+      <p>Reading the clipboard is an <strong>optional</strong> permission. It is requested separately
+        and works only if you allow it.</p>
+      <p>Once your prompt is in a service's input field, that service receives it and handles it under
+        its own privacy policy. We are not a party to that exchange.</p>
+
+      <h2>What our web pages collect</h2>
+      <p>Three pages are hosted on this site: the welcome page shown after installing, the rating page,
+        and the uninstall page the browser opens when you remove the extension.</p>
+      <p>This privacy page is not one of them. It loads nothing from any third party and carries no
+        analytics at all.</p>
+      <p>The three pages measure only an opening the extension makes at a moment in the life of an
+        installation: when it is installed, when you rate it, and when you remove it. The extension
+        marks such an opening with the installation context it puts in the page's address (see “How
+        the pages know anything” below). A page opened any other way — from a bookmark, from a shared
+        link or by typing its address — loads no analytics and sends nothing to Google Analytics or
+        Yandex Metrica.</p>
+
+      <h3>Lifecycle events</h3>
+      <p>The three pages send three events to our own Google Analytics property:</p>
+      <table>
+        <thead>
+          <tr><th>Sent with the event</th><th>What it is</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Installation identifier</td><td>A random UUID created for this installation in this browser profile. It is not tied to an account, and a reinstall creates a new one</td></tr>
+          <tr><td>Event name</td><td><code>extension_install</code>, <code>extension_rating</code> or <code>extension_uninstall</code></td></tr>
+          <tr><td>Extension language</td><td>The interface language you selected</td></tr>
+          <tr><td>Extension version</td><td>The version installed</td></tr>
+          <tr><td>Installation month</td><td>The month of installation in UTC, for example <code>2026-09</code>, or <code>unknown</code></td></tr>
+          <tr><td>Rating</td><td><code>1</code>–<code>5</code>, only if you rated the extension</td></tr>
+          <tr><td>Rating at uninstall</td><td><code>1</code>–<code>5</code>, <code>not_rated</code>, or <code>unknown</code></td></tr>
+          <tr><td>Lifetime</td><td>How many days the installation lasted, as a fractional number, and whether that number could be measured at all</td></tr>
+          <tr><td>Page address</td><td>The address of the page itself, without query string or fragment</td></tr>
+        </tbody>
+      </table>
+      <p>We do not send Google Analytics a user ID. We do not send the exact installation date or the
+        exact time you rated — only the derived month and duration.</p>
+      <p>Google Analytics adds its own standard fields to these requests, such as the page title, the
+        browser language, a session identifier, timing values and technical tag fields. Like any web
+        request, it also reveals your IP address and browser information to Google.</p>
+      <p>In that property, enhanced measurement, Google signals and advertising personalisation are
+        switched off, and advertising consent flags are set to denied.</p>
+
+      <h3>Visit statistics</h3>
+      <p>The same three pages run a Yandex Metrica counter, under the same rule as Google Analytics.
+        Each measured opening records one page view with the page's address (without query string or
+        fragment), the page's name and the interface language.</p>
+      <p>The counter also receives the same lifecycle events as the table above, under the same
+        rules and with the same values: <code>extension_install</code>, <code>extension_rating</code>
+        together with a second goal naming the number of stars, and <code>extension_uninstall</code>. The counter receives
+        no user ID and no installation identifier in any form.</p>
+      <p>The service adds its own technical fields and its own visitor identifier to these requests.
+        Like any web request, the counter also reveals your IP address and browser information to
+        Yandex.</p>
+      <p>The counter records clicks on outbound links and how long you spend on the page. Its other
+        recording features are switched off in the page's own code rather than left at the service's
+        defaults: there is no click map, so where you move or click on the page is not recorded, and
+        there is no session recording (Webvisor) and no e-commerce tracking.</p>
+
+      <h3>How the pages know anything</h3>
+      <p>The extension opens these pages itself, and registers the uninstall address with your browser
+        in advance. It passes what the page needs in the fragment of the address — the part after
+        <code>#</code>: the installation identifier, the installation time, the extension's version,
+        name and language, its store identifier, and your rating. Browsers do not send the fragment to
+        the server. The page reads it once and strips it, together with any query string, from the
+        address bar before any analytics start, and only the values described in this section are then
+        sent.</p>
+      <p>Nothing in that fragment describes you. The name in it is the extension's own name, not
+        yours.</p>
+      <p>To avoid counting the same event twice, each page keeps a short record in the site's local
+        storage of which events it has already sent for that installation.</p>
+
+      <h3>Other things the pages load</h3>
+      <p>The pages load web fonts from Google, and the rating and uninstall pages embed a Google Form.
+        Those requests go to Google and are visible to it. Anything you choose to type into the form is
+        handled by Google Forms and by us as the form's owner. The pages are served by GitHub Pages,
+        which sees ordinary web server request data. Ratings of 4 or 5 open the extension's Chrome Web
+        Store page, which then applies its own policies.</p>
+
+      <h2>What we never collect</h2>
+      <p>Your prompts, your templates, the contents of your files and of the web pages you attach, the
+        answers from AI services, the addresses of your conversations, your name, your email address and your account details are not
+        part of anything we collect. There is no code path that sends them.</p>
+      <p>This does not make the collection anonymous. A random identifier is a pseudonym, and the
+        analytics services still see your IP address and browser details.</p>
+
+      <h2>Why we collect it</h2>
+      <p>To know how many people install the extension, how they rate it, how many remove it and how
+        long they keep it. We use that to decide what to fix and what to build next.</p>
+      <p>We do not use it for advertising, profiling or automated decisions about you, we do not sell
+        it, and we do not combine it with data from other sources.</p>
+
+      <h2>Legal basis</h2>
+      <p>Where the GDPR applies, we rely on our legitimate interest in understanding how the extension
+        is used and improving it. Our pages do not ask for your consent before the analytics start; you
+        can prevent the collection by blocking cookies or scripts for this site, or by not opening the
+        pages. You may object to this processing by writing to the address at the end of this policy —
+        please read the limits in “Your rights” first.</p>
+
+      <h2>Cookies and storage</h2>
+      <ul>
+        <li>Google Analytics sets its own cookies in your browser. We do not change their lifetime; the
+          service's default for its identifier cookie is two years, and your browser may shorten it.</li>
+        <li>Yandex Metrica sets its own cookies and identifiers.</li>
+        <li>Our pages use the site's local storage for the short record of already-sent events.</li>
+        <li>The extension uses your browser's extension storage, as described above.</li>
+      </ul>
+      <p>You can block or delete all of these from your browser's settings. Blocking them does not
+        break the extension.</p>
+
+      <h2>Who receives the data</h2>
+      <ul>
+        <li><strong>Google</strong> — Google Analytics, Google Fonts and Google Forms.</li>
+        <li><strong>Yandex</strong> — the Metrica counter.</li>
+        <li><strong>GitHub</strong> — hosting for the pages.</li>
+        <li><strong>The Chrome Web Store</strong> — when you install the extension or open its store
+          page.</li>
+      </ul>
+      <p>These companies process data on servers that may be outside your country.</p>
+
+      <h2>How long it is kept</h2>
+      <p>In our Google Analytics property, event and user data are retained for 14 months, and the
+        retention period restarts when a new event arrives for the same installation. Data that has
+        already been aggregated into reports is not necessarily removed when the underlying events
+        expire.</p>
+      <p>Yandex Metrica keeps visit data according to its own terms. Data on your device stays until you
+        clear the extension's data, clear the site's data, or uninstall.</p>
+
+      <h2>Your choices</h2>
+      <ul>
+        <li>Uninstall the extension. Collection stops. Removing it opens the uninstall page once, which
+          sends the uninstall event.</li>
+        <li>Clear the extension's data from its settings. This removes the local data and replaces the
+          registered uninstall address with one that carries no installation context.</li>
+        <li>Clear this site's cookies and local storage in your browser.</li>
+        <li>Block cookies or scripts for this site, or use a content blocker.</li>
+        <li>Do not grant the optional clipboard permission.</li>
+        <li>Turn off the extension button or the page menu items in the extension's settings.</li>
+        <li>Install Google's official Analytics opt-out browser add-on, if you prefer to stop Google
+          Analytics across sites. It affects only what Google Analytics receives. The Yandex
+          Metrica counter is a separate script and keeps recording the page views and lifecycle events
+          described above, so to
+          stop everything these pages collect, block cookies or scripts for this site instead.</li>
+      </ul>
+
+      <h2>Your rights</h2>
+      <p>If you are in the EEA, the UK or another jurisdiction with similar law, you have the right to
+        ask for access to your personal data, and for its correction, deletion or restriction, and to
+        complain to your supervisory authority.</p>
+      <p>There is a practical limit you should know about. The only identifier we hold for the analytics
+        data is a random UUID generated in your browser. We have no way to connect it to your name, your
+        email address or your device, and you have no way to prove a given UUID is yours. We therefore
+        cannot locate “your” records on request. What we can do is explain exactly what is collected —
+        this policy is that explanation — and you can remove the local identifier yourself by clearing
+        the extension's data or uninstalling it.</p>
+      <p>Requests: <a href="mailto:chatwithmultipleai@gmail.com">chatwithmultipleai@gmail.com</a>.</p>
+
+      <h2>Children</h2>
+      <p>The extension is not directed at children under 13. We do not knowingly collect personal
+        information from them. If you believe a child has provided us with personal information through
+        our feedback forms, write to the address above and we will delete it.</p>
+
+      <h2>Security</h2>
+      <p>The pages are served over HTTPS and the analytics requests are encrypted in transit. The data
+        we hold is limited to what this policy lists. No transmission over the internet can be
+        guaranteed to be completely secure.</p>
+
+      <h2>Changes to this policy</h2>
+      <p>If what we collect changes, this page changes with it, and the date at the top is updated.
+        Material changes will be described here rather than made silently.</p>
+
+      <p class="contact">Questions:
+        <a href="mailto:chatwithmultipleai@gmail.com">chatwithmultipleai@gmail.com</a></p>
+    </main>
+  </div>
+</body>
+</html>

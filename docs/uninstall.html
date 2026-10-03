@@ -7,6 +7,7 @@
 <meta name="description" content="You've uninstalled Use Multiple Chat AI at Once. Tell us why — your feedback helps us improve.">
 <meta name="theme-color" content="#4B3BD6">
 <meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
 <link rel="icon" type="image/png" href="assets/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -45,35 +46,7 @@
     </div>
   </div>
 
-  <!-- Shared Metrika bootstrap: parses the fragment → window.PAGE_FRAGMENT,
-       inits Yandex.Metrika (external page only; no extension code here). -->
-  <script src="metrika.js"></script>
-
-  <!-- Page-specific: build the reinstall link from the id the extension wrote. -->
-  <script type="text/javascript">
-    // Chrome Web Store detail base — mirrors WEBSTORE_DETAIL_URL_BASE in
-    // shared/constants.js (buildWebstoreDetailUrl). The extension id is appended
-    // as a path segment to build the "reinstall" link; works before publication.
-    var WEBSTORE_DETAIL_URL_BASE = 'https://chromewebstore.google.com/detail';
-    var REINSTALL_WRAP_ID = 'reinstall';
-    var REINSTALL_LINK_ID = 'reinstall-link';
-    var UNINSTALL_GOAL = 'uninstall_opened';   // MIRRORS UNINSTALL_METRIKA_GOAL (shared/constants.js)
-
-    // Build the "reinstall" link from the id and reveal it. Missing id → stays
-    // hidden (no broken link on a static, pre-publication page).
-    var frag = window.PAGE_FRAGMENT || {};
-    if (frag.id) {
-      document.getElementById(REINSTALL_LINK_ID).href =
-        WEBSTORE_DETAIL_URL_BASE + '/' + encodeURIComponent(frag.id);
-      document.getElementById(REINSTALL_WRAP_ID).hidden = false;
-    }
-
-    // Rollup goal fired once per uninstall-page open (symmetric with welcome).
-    // Per-locale breakdown comes from the locale/language visit params on the
-    // same visit — no per-locale goals (there are 53 locales).
-    if (window.Metrika) window.Metrika.reachGoals([{ goal: UNINSTALL_GOAL, params: {} }]);
-  </script>
-  <!-- noscript fallback pixel mirrors the Metrika counter id (110166603) -->
-  <noscript><div><img src="https://mc.yandex.ru/watch/110166603" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  <p class="footer"><a id="privacy-link" hidden></a></p>
+  <script type="module" src="hosted-bootstrap.js"></script>
 </body>
 </html>

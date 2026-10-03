@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Use Multiple Chat AI at Once — Installed</title>
 <meta name="description" content="You've installed Use Multiple Chat AI at Once. Pin it to your toolbar in two clicks and chat with multiple AI models at the same time.">
@@ -231,30 +232,7 @@
     fit();
   </script>
 
-  <!-- Shared Metrika bootstrap: parses the fragment → window.PAGE_FRAGMENT,
-       inits Yandex.Metrika (external page only; no extension code here). -->
-  <script src="metrika.js"></script>
-
-  <!-- Page-specific: show the localized name, then fire the welcome rollup goal. -->
-  <script type="text/javascript">
-    var WELCOME_GOAL = 'welcome_opened';   // MIRRORS WELCOME_METRIKA_GOAL (shared/constants.js)
-    var HEADING_NAME_SELECTOR = '.nm';
-
-    // Show the localized name (textContent only). Missing → English fallback.
-    // Re-run the layout so the title auto-fit accounts for the new (longer) text
-    // immediately, not only after load/fonts.ready.
-    var frag = window.PAGE_FRAGMENT || {};
-    if (frag.name) {
-      document.querySelector(HEADING_NAME_SELECTOR).textContent = frag.name;
-      if (typeof schedule === 'function') schedule();
-    }
-
-    // Rollup goal fired once per welcome-page open. Per-locale breakdown comes
-    // from the locale/language visit params on the same visit — no per-locale
-    // goals (there are 53 locales).
-    if (window.Metrika) window.Metrika.reachGoals([{ goal: WELCOME_GOAL, params: {} }]);
-  </script>
-  <!-- noscript fallback pixel mirrors the Metrika counter id (110166603) -->
-  <noscript><div><img src="https://mc.yandex.ru/watch/110166603" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  <p class="footer"><a id="privacy-link" hidden></a></p>
+  <script type="module" src="hosted-bootstrap.js"></script>
 </body>
 </html>
