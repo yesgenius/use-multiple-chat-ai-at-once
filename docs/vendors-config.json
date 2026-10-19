@@ -1,4 +1,14 @@
 {
-  "version": "20260902111945",
-  "vendors": []
+  "version": "20261019191653",
+  "vendors": [
+    {
+      "key": "claude",
+      "index": 2,
+      "label": "Claude",
+      "newChatUrl": "https://claude.ai/new",
+      "maxTextSize": 4095,
+      "sendButtonSelector": "button[data-testid=\"chat-input-send\"]",
+      "userMessageSelector": "[data-testid=\"user-message\"]"
+    }
+  ]
 }
