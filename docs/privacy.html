@@ -211,11 +211,13 @@
         storage of which events it has already sent for that installation.</p>
 
       <h3>Other things the pages load</h3>
-      <p>The rating and uninstall pages embed a Google Form. The form's requests go to Google and are
-        visible to it. Anything you choose to type into the form is handled by Google Forms and by us
-        as the form's owner. The pages and their fonts are served by GitHub Pages, which sees ordinary
-        web server request data. Ratings of 4 or 5 open the extension's Chrome Web
-        Store page, which then applies its own policies.</p>
+      <p>The rating and uninstall pages embed a Google Form. Whenever a page loads the form, the form
+        loads its own resources, such as scripts, styles and fonts, from Google, so its requests go to
+        Google and are visible to it even if you type nothing. Anything you choose to type into the
+        form is handled by Google Forms and by us as the form's owner. Our pages and the typeface of
+        their own text are served by GitHub Pages, which sees ordinary web server request data.
+        Ratings of 4 or 5 open the extension's Chrome Web Store page, which then applies its own
+        policies.</p>
       <p>The home page's “Add to Chrome” button opens the extension's Chrome Web Store page. The
         address of that button carries three campaign tags that name the home page of this site as
         where the visit came from, and nothing else: no identifier and nothing about you. The Chrome
@@ -249,6 +251,10 @@
         <li>Google Analytics sets its own cookies in your browser. We do not change their lifetime; the
           service's default for its identifier cookie is two years, and your browser may shorten it.</li>
         <li>Yandex Metrica sets its own cookies and identifiers.</li>
+        <li>The Google Form on the rating and uninstall pages is served by Google, which may set or
+          read its own cookies in your browser whenever a page loads the form. Settings for this
+          site do not cover the form; to stop it, block third-party cookies or use a content
+          blocker.</li>
         <li>Our pages use the site's local storage for the short record of already-sent events.</li>
         <li>The extension uses your browser's extension storage, as described above.</li>
       </ul>
