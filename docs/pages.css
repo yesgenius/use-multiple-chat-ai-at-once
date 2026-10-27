@@ -1,11 +1,18 @@
 /*
- * Shared stylesheet for the hosted pages (welcome / uninstall / rate-us).
+ * Shared stylesheet for the hosted pages (welcome / uninstall / rate-us /
+ * privacy) and the site home page.
  *
  * Single source of truth for the design tokens, reset, body typography, logo,
- * and — for the card-column pages (uninstall + rate-us) — the .page/.card/
- * .form-frame/.footer/.reinstall layout. welcome.html consumes only the
- * tokens/reset/body/logo/h1 base and keeps its bespoke --u-scaled layout inline
- * under a .welcome container (it deliberately does NOT reuse .page).
+ * the store button, and — for the card-column pages (uninstall, rate-us and
+ * privacy) — the .page/.card/.form-frame/.footer/.reinstall layout. welcome.html
+ * consumes only the tokens/reset/body/logo/h1 base and keeps its bespoke
+ * --u-scaled layout inline under a .welcome container (it deliberately does NOT
+ * reuse .page); the home page takes that base and the store button from here
+ * and keeps its own layout under a .home container, in home.css.
+ *
+ * 'Manrope' heads the font stack but is loaded by each page, from
+ * fonts/manrope.css, which the site serves itself. Where it is not loaded, the
+ * rest of the stack is used.
  *
  * External page only — no extension code references this file.
  */
@@ -66,13 +73,13 @@ h1{
 
 .footer{ text-align:center; }
 .reinstall{ margin:0; }
-.reinstall-btn{
+.reinstall-btn, .store-btn{
   display:inline-block; padding:11px 24px;
   border:1.5px solid var(--accent); border-radius:999px;
   color:var(--accent); font-weight:600; font-size:15px; line-height:1;
   text-decoration:none; transition:background-color .15s ease, color .15s ease;
 }
-.reinstall-btn:hover{ background:var(--accent); color:#fff; }
+.reinstall-btn:hover, .store-btn:hover{ background:var(--accent); color:#fff; }
 
 @media (max-width:560px){
   .page{ padding:40px 16px 56px; }

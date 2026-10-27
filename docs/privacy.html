@@ -8,12 +8,14 @@
 <meta name="theme-color" content="#4B3BD6">
 <meta name="referrer" content="no-referrer">
 <link rel="icon" type="image/png" href="assets/logo.png">
+<link rel="preload" href="fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="fonts/manrope.css">
 <link rel="stylesheet" href="pages.css">
 <style>
   /* Page-specific only — tokens/reset/body/logo/h1/.page live in pages.css.
-     This page deliberately loads no web font and no script: it is the one page
-     that states it contacts no third party, so it must not contact one. The
-     shared font stack falls back to the system face. */
+     This page deliberately loads no script and nothing from another site: it
+     states it contacts no third party, so it must not contact one. Its
+     typeface is served by the site itself, like every page of the site. */
   .page{ align-items:stretch; gap:0; }
   header{ text-align:center; margin-bottom:40px; }
   .logo{ margin:0 auto 20px; }
@@ -60,15 +62,15 @@
     <header>
       <img class="logo" src="assets/logo.png" alt="Use Multiple Chat AI at Once">
       <h1>Privacy Policy</h1>
-      <p class="updated">Last updated: 2026-09-27</p>
+      <p class="updated">Last updated: 2026-10-27</p>
     </header>
 
     <main>
       <div class="lead">
         <p>This policy explains what <strong>Use Multiple Chat AI at Once</strong> (also listed as
           <strong>Chat with Multiple AI</strong>) collects, why, and what you can do about it. It covers the
-          browser extension and the three web pages we host for it: the welcome page, the rating page
-          and the uninstall page.</p>
+          browser extension and the web pages we host for it: the home page of this site, the welcome
+          page, the rating page and the uninstall page.</p>
         <p>It is short because the extension collects little. Everything below describes what the code
           actually does.</p>
         <ul>
@@ -142,16 +144,16 @@
         its own privacy policy. We are not a party to that exchange.</p>
 
       <h2>What our web pages collect</h2>
-      <p>Three pages are hosted on this site: the welcome page shown after installing, the rating page,
-        and the uninstall page the browser opens when you remove the extension.</p>
-      <p>This privacy page is not one of them. It loads nothing from any third party and carries no
-        analytics at all.</p>
-      <p>The three pages measure only an opening the extension makes at a moment in the life of an
-        installation: when it is installed, when you rate it, and when you remove it. The extension
-        marks such an opening with the installation context it puts in the page's address (see “How
-        the pages know anything” below). A page opened any other way — from a bookmark, from a shared
-        link or by typing its address — loads no analytics and sends nothing to Google Analytics or
-        Yandex Metrica.</p>
+      <p>Only three pages on this site collect anything: the welcome page shown after installing, the
+        rating page, and the uninstall page the browser opens when you remove the extension.</p>
+      <p>The home page of this site and this privacy page are not among them. They load nothing from
+        any third party and carry no analytics at all.</p>
+      <p>The welcome, rating and uninstall pages measure only an opening the extension makes at a
+        moment in the life of an installation: when it is installed, when you rate it, and when you
+        remove it. The extension marks such an opening with the installation context it puts in the
+        page's address (see “How the pages know anything” below). A page opened any other way — from a
+        bookmark, from a shared link or by typing its address — loads no analytics and sends nothing
+        to Google Analytics or Yandex Metrica.</p>
 
       <h3>Lifecycle events</h3>
       <p>The three pages send three events to our own Google Analytics property:</p>
@@ -209,11 +211,18 @@
         storage of which events it has already sent for that installation.</p>
 
       <h3>Other things the pages load</h3>
-      <p>The pages load web fonts from Google, and the rating and uninstall pages embed a Google Form.
-        Those requests go to Google and are visible to it. Anything you choose to type into the form is
-        handled by Google Forms and by us as the form's owner. The pages are served by GitHub Pages,
-        which sees ordinary web server request data. Ratings of 4 or 5 open the extension's Chrome Web
+      <p>The rating and uninstall pages embed a Google Form. The form's requests go to Google and are
+        visible to it. Anything you choose to type into the form is handled by Google Forms and by us
+        as the form's owner. The pages and their fonts are served by GitHub Pages, which sees ordinary
+        web server request data. Ratings of 4 or 5 open the extension's Chrome Web
         Store page, which then applies its own policies.</p>
+      <p>The home page's “Add to Chrome” button opens the extension's Chrome Web Store page. The
+        address of that button carries three campaign tags that name the home page of this site as
+        where the visit came from, and nothing else: no identifier and nothing about you. The Chrome
+        Web Store may record visits and installs with those tags, under its own policies, and the
+        analytics it provides us for the extension's store page then show which of them came from the
+        home page. The tags reach neither the extension nor the analytics of the welcome, rating and
+        uninstall pages.</p>
 
       <h2>What we never collect</h2>
       <p>Your prompts, your templates, the contents of your files and of the web pages you attach, the
@@ -248,7 +257,7 @@
 
       <h2>Who receives the data</h2>
       <ul>
-        <li><strong>Google</strong> — Google Analytics, Google Fonts and Google Forms.</li>
+        <li><strong>Google</strong> — Google Analytics and Google Forms.</li>
         <li><strong>Yandex</strong> — the Metrica counter.</li>
         <li><strong>GitHub</strong> — hosting for the pages.</li>
         <li><strong>The Chrome Web Store</strong> — when you install the extension or open its store

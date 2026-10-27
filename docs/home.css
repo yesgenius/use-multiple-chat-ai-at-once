@@ -1,0 +1,135 @@
+/*
+ * Stylesheet of the site home page, the page built from the store listing.
+ *
+ * It carries the visual language of the welcome page — the one-row header with
+ * the logo, the accent name, the uppercase pill labels, the weight-500 captions
+ * and the muted footer — at the same proportions of one scale unit, --u. The
+ * welcome page sets that unit from a script that fits its screenshots; this page
+ * runs no script and shows no screenshot, so the unit follows the window width
+ * in plain CSS, between a floor that keeps the text readable on a phone and a
+ * ceiling that keeps it calm on a wide screen.
+ *
+ * Tokens, reset, body typography, the logo shadow, the h1 weight and the store
+ * button come from pages.css; the typeface comes from fonts/manrope.css. Every
+ * size and colour of the design is a named custom property below; the rules
+ * take them from there.
+ */
+
+/* ---------- scale and proportions ---------- */
+.home{
+  /* scale unit: follows the window width between a readable floor and a calm ceiling */
+  --u-floor:600px;
+  --u-fluid:60vw;
+  --u-ceiling:800px;
+  --u:clamp(var(--u-floor), var(--u-fluid), var(--u-ceiling));
+
+  /* page column */
+  --page-max-width:1480px;
+  --page-side-padding:24px;
+  --page-top-padding:calc(var(--u) * 0.026);
+  --page-bottom-padding:calc(var(--u) * 0.06);
+  --page-gap:calc(var(--u) * 0.03);
+
+  /* header */
+  --header-gap:calc(var(--u) * 0.022);
+  --logo-size:calc(var(--u) * 0.072);
+  --logo-radius:calc(var(--u) * 0.02);
+  --heading-column-gap:calc(var(--u) * 0.008);
+  --title-size:calc(var(--u) * 0.044);
+  --title-line-height:1.06;
+
+  /* captions: the summary and every line of a section */
+  --caption-size:calc(var(--u) * 0.0235);
+  --caption-line-height:1.35;
+  --caption-weight:500;
+
+  /* sections */
+  --section-measure:40em;
+  --section-gap:calc(var(--u) * 0.013);
+  --list-indent:1.6em;
+
+  /* section heading: the welcome pill label */
+  --label-size:calc(var(--u) * 0.018);
+  --label-weight:700;
+  --label-tracking:0.07em;
+  --label-tint:rgba(75,59,214,0.09);
+  --label-radius:calc(var(--u) * 0.011);
+  --label-padding-block:calc(var(--u) * 0.006);
+  --label-padding-inline:calc(var(--u) * 0.013);
+
+  /* footer */
+  --footer-size:calc(var(--u) * 0.023);
+  --footer-line-height:1.5;
+  --footer-weight:500;
+  --footer-measure:32em;
+}
+
+/* ---------- page column ---------- */
+.home{
+  width:100%; max-width:var(--page-max-width); margin:0 auto;
+  padding:var(--page-top-padding) var(--page-side-padding) var(--page-bottom-padding);
+  display:flex; flex-direction:column; align-items:center;
+  gap:var(--page-gap);
+}
+
+/* ---------- header (single compact row) ---------- */
+.home header{
+  display:flex; align-items:center; justify-content:center;
+  gap:var(--header-gap); text-align:left;
+}
+.home .logo{
+  flex:0 0 auto;
+  width:var(--logo-size); height:var(--logo-size);
+  border-radius:var(--logo-radius);
+}
+.home .htext{
+  display:flex; flex-direction:column; align-items:flex-start;
+  gap:var(--heading-column-gap);
+}
+.home h1{ font-size:var(--title-size); line-height:var(--title-line-height); }
+.home h1 .nm{ color:var(--accent); }
+
+/* ---------- captions ---------- */
+.home .summary,
+.home section p,
+.home section li{
+  font-size:var(--caption-size); line-height:var(--caption-line-height);
+  color:var(--ink); font-weight:var(--caption-weight);
+}
+.home a{ color:var(--accent); }
+/* An address of the listing, shown as a link, has no break point of its own;
+   it may break anywhere rather than push the column wider than a phone. */
+.home .summary a,
+.home section a{ overflow-wrap:anywhere; }
+
+/* ---------- sections: a centred column, read from the left ---------- */
+.home section{
+  width:100%; max-width:var(--section-measure);
+  font-size:var(--caption-size);
+  display:flex; flex-direction:column; align-items:flex-start; text-align:left;
+  gap:var(--section-gap);
+}
+.home section ol{
+  display:flex; flex-direction:column; gap:var(--section-gap);
+  padding-left:var(--list-indent);
+}
+.home h2{
+  font-size:var(--label-size); font-weight:var(--label-weight);
+  letter-spacing:var(--label-tracking); text-transform:uppercase;
+  color:var(--accent); white-space:normal;
+  background:var(--label-tint); border-radius:var(--label-radius);
+  padding:var(--label-padding-block) var(--label-padding-inline);
+}
+
+/* ---------- footer ---------- */
+.home .footer p{
+  font-size:var(--footer-size); line-height:var(--footer-line-height);
+  color:var(--muted); font-weight:var(--footer-weight);
+  max-width:var(--footer-measure);
+}
+
+/* On narrow screens the header stacks, centred, as the welcome page does. */
+@media (max-width:560px){
+  .home header{ flex-direction:column; text-align:center; }
+  .home .htext{ align-items:center; }
+}
