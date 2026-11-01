@@ -1,5 +1,5 @@
 {
-  "version": "20261019191653",
+  "version": "20261101125951",
   "vendors": [
     {
       "key": "claude",
@@ -9,6 +9,26 @@
       "maxTextSize": 4095,
       "sendButtonSelector": "button[data-testid=\"chat-input-send\"]",
       "userMessageSelector": "[data-testid=\"user-message\"]"
+    },
+    {
+      "key": "perplexity",
+      "index": 12,
+      "label": "Perplexity",
+      "newChatUrl": "https://www.perplexity.ai/",
+      "maxTextSize": 40000,
+      "sendButtonSelector": "[data-composer=\"true\"] button.bg-button-bg",
+      "uploadUrlPattern": [
+        "ppl-ai-file-upload"
+      ],
+      "postInsertNudge": true,
+      "inputActions": [
+        {
+          "type": "wait",
+          "params": {
+            "duration": 2000
+          }
+        }
+      ]
     }
   ]
 }
