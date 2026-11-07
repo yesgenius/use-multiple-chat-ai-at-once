@@ -5,7 +5,7 @@
  * the logo, the accent name, the uppercase pill labels, the weight-500 captions
  * and the muted footer — at the same proportions of one scale unit, --u. The
  * welcome page sets that unit from a script that fits its screenshots; this page
- * runs no script and shows no screenshot, so the unit follows the window width
+ * runs no script, so the unit follows the window width
  * in plain CSS, between a floor that keeps the text readable on a phone and a
  * ceiling that keeps it calm on a wide screen.
  *
@@ -62,6 +62,15 @@
   --footer-line-height:1.5;
   --footer-weight:500;
   --footer-measure:32em;
+  --badge-height:calc(var(--u) * 0.07);
+  --badge-gap:calc(var(--u) * 0.02);
+
+  /* screenshot and its full-window view */
+  --shot-radius:calc(var(--u) * 0.012);
+  --shot-shadow:0 calc(var(--u) * 0.01) calc(var(--u) * 0.04) rgba(40, 30, 120, 0.18);
+  --lightbox-backdrop:rgba(15, 12, 40, 0.88);
+  --lightbox-margin:4vmin;
+  --lightbox-layer:1000;
 }
 
 /* ---------- page column ---------- */
@@ -73,8 +82,11 @@
 }
 
 /* ---------- header (single compact row) ---------- */
+/* The header takes the width of the text column, so the logo, the name and
+   the summary line up with the sections below instead of overhanging them. */
 .home header{
-  display:flex; align-items:center; justify-content:center;
+  display:flex; align-items:center; justify-content:flex-start;
+  width:100%; max-width:var(--section-measure);
   gap:var(--header-gap); text-align:left;
 }
 .home .logo{
@@ -127,6 +139,40 @@
   color:var(--muted); font-weight:var(--footer-weight);
   max-width:var(--footer-measure);
 }
+
+/* ---------- screenshot ---------- */
+.home .shot{ width:100%; max-width:var(--section-measure); margin:0; }
+.home .shot button,
+.home .lightbox button{ display:block; margin:0; padding:0; border:0; background:none; font:inherit; }
+.home .shot button{ width:100%; cursor:zoom-in; }
+.home .shot img{
+  display:block; width:100%; height:auto;
+  border-radius:var(--shot-radius); box-shadow:var(--shot-shadow);
+}
+
+/* Full-window view: a popover the browser shows over everything and closes on Escape. */
+.home .lightbox{
+  position:fixed; inset:0; width:100%; height:100%; max-width:none; max-height:none;
+  margin:0; padding:0; border:0; background:var(--lightbox-backdrop);
+}
+.home .lightbox:popover-open{ display:flex; }
+.home .lightbox button{
+  display:flex; align-items:center; justify-content:center;
+  width:100%; height:100%; cursor:zoom-out;
+}
+/* The picture fills the window, minus a margin, at its own proportions. */
+.home .lightbox img{
+  width:calc(100vw - 2 * var(--lightbox-margin));
+  height:calc(100dvh - 2 * var(--lightbox-margin));
+  object-fit:contain;
+}
+
+/* Directory badges: one row, one height, whatever size each directory drew. */
+.home .footer .badges{
+  display:flex; flex-wrap:wrap; justify-content:center; align-items:center;
+  gap:var(--badge-gap); max-width:none;
+}
+.home .footer .badges img{ display:block; height:var(--badge-height); width:auto; }
 
 /* On narrow screens the header stacks, centred, as the welcome page does. */
 @media (max-width:560px){
