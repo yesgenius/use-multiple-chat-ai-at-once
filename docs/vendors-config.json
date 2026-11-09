@@ -1,6 +1,27 @@
 {
-  "version": "20261101125951",
+  "version": "20261109090515",
   "vendors": [
+    {
+      "key": "chatgpt",
+      "index": 1,
+      "label": "ChatGPT",
+      "newChatUrl": "https://chatgpt.com",
+      "maxTextSize": 9999,
+      "sendButtonSelector": "button[type=\"submit\"]",
+      "existingChatHydrationSelector": "[data-user-message-bubble]",
+      "userMessageSelector": "[data-user-message-bubble]",
+      "fileInputSelector": "input[type=\"file\"]:not([accept])",
+      "sendDispatch": "form-request-submit",
+      "readyActions": [
+        {
+          "type": "waitForElement",
+          "params": {
+            "selector": "input[type=\"file\"]",
+            "timeout": 5000
+          }
+        }
+      ]
+    },
     {
       "key": "claude",
       "index": 2,
