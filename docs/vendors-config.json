@@ -1,5 +1,5 @@
 {
-  "version": "20261109090515",
+  "version": "20261125160836",
   "vendors": [
     {
       "key": "chatgpt",
@@ -32,6 +32,27 @@
       "userMessageSelector": "[data-testid=\"user-message\"]"
     },
     {
+      "key": "gigachat",
+      "index": 6,
+      "label": "GigaChat",
+      "newChatUrl": "https://giga.chat",
+      "sendButtonSelector": "button[type=\"submit\"][data-da_name=\"InputSubmitButton\"]",
+      "userMessageSelector": "div[class*=\"__UserBubble-\"]",
+      "uploadUrlPattern": [
+        "/gc/otr",
+        "/attachments-upload/"
+      ],
+      "readyActions": [
+        {
+          "type": "waitForElement",
+          "params": {
+            "selector": "input[type=\"file\"]",
+            "timeout": 10000
+          }
+        }
+      ]
+    },
+    {
       "key": "perplexity",
       "index": 12,
       "label": "Perplexity",
@@ -49,6 +70,38 @@
             "duration": 2000
           }
         }
+      ]
+    },
+    {
+      "key": "qwen",
+      "index": 14,
+      "label": "Qwen",
+      "newChatUrl": "https://chat.qwen.ai",
+      "sendButtonSelector": ".chat-prompt-send-button button.send-button",
+      "userMessageSelector": ".chat-user-message",
+      "sendActions": [
+        {
+          "type": "wait",
+          "params": {
+            "duration": 2000
+          }
+        }
+      ],
+      "holdFocusAfterDispatchMs": 2000,
+      "sendDispatch": "pointer-sequence",
+      "readyActions": [
+        {
+          "type": "waitForElement",
+          "params": {
+            "selector": "body:not(:has(#splash-screen))",
+            "timeout": 10000
+          }
+        }
+      ],
+      "uploadUrlPattern": [
+        ".oss-",
+        "/api/v2/files/getstsToken",
+        "/api/v2/files/parse"
       ]
     }
   ]
